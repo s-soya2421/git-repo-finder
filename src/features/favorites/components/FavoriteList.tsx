@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { Button } from "@/shared/ui/button";
 import type { FavoriteItem } from "../types";
 import {
@@ -10,21 +10,34 @@ import {
 } from "../lib/favorites-storage";
 import { FavoriteListItem } from "./FavoriteListItem";
 
-export function FavoriteList() {
-  const [items, setItems] = useState<FavoriteItem[]>([]);
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
-  useEffect(() => {
-    setItems(getFavorites());
-  }, []);
+const emptyArray: FavoriteItem[] = [];
+
+function getServerSnapshot() {
+  return emptyArray;
+}
+
+export function FavoriteList() {
+  const getSnapshot = useCallback(() => getFavorites(), []);
+
+  const items = useSyncExternalStore(
+    subscribeToStorage,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   function handleRemove(id: number) {
     removeFavorite(id);
-    setItems(getFavorites());
+    window.dispatchEvent(new Event("storage"));
   }
 
   function handleClearAll() {
     clearAllFavorites();
-    setItems([]);
+    window.dispatchEvent(new Event("storage"));
   }
 
   if (items.length === 0) {

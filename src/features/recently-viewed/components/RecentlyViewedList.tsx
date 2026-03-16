@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { Button } from "@/shared/ui/button";
 import type { RecentlyViewedItem } from "../types";
 import {
@@ -10,21 +10,34 @@ import {
 } from "../lib/recently-viewed-storage";
 import { RecentlyViewedListItem } from "./RecentlyViewedListItem";
 
-export function RecentlyViewedList() {
-  const [items, setItems] = useState<RecentlyViewedItem[]>([]);
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
-  useEffect(() => {
-    setItems(getRecentlyViewed());
-  }, []);
+const emptyArray: RecentlyViewedItem[] = [];
+
+function getServerSnapshot() {
+  return emptyArray;
+}
+
+export function RecentlyViewedList() {
+  const getSnapshot = useCallback(() => getRecentlyViewed(), []);
+
+  const items = useSyncExternalStore(
+    subscribeToStorage,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   function handleRemove(id: number) {
     removeRecentlyViewed(id);
-    setItems(getRecentlyViewed());
+    window.dispatchEvent(new Event("storage"));
   }
 
   function handleClearAll() {
     clearAllRecentlyViewed();
-    setItems([]);
+    window.dispatchEvent(new Event("storage"));
   }
 
   if (items.length === 0) {

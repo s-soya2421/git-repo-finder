@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import type { StoredRepository } from "@/shared/types/stored-repository";
@@ -14,21 +14,35 @@ type FavoriteButtonProps = {
   repository: StoredRepository;
 };
 
-export function FavoriteButton({ repository }: FavoriteButtonProps) {
-  const [favorited, setFavorited] = useState(false);
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
-  useEffect(() => {
-    setFavorited(isFavorite(repository.id));
-  }, [repository.id]);
+function getServerSnapshot() {
+  return false;
+}
+
+export function FavoriteButton({ repository }: FavoriteButtonProps) {
+  const getSnapshot = useCallback(
+    () => isFavorite(repository.id),
+    [repository.id],
+  );
+
+  const favorited = useSyncExternalStore(
+    subscribeToStorage,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   function handleToggle() {
     if (favorited) {
       removeFavorite(repository.id);
-      setFavorited(false);
     } else {
       addFavorite(repository);
-      setFavorited(true);
     }
+    // Force re-render by dispatching a storage event
+    window.dispatchEvent(new Event("storage"));
   }
 
   return (
