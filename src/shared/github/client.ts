@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { log } from "@/shared/lib/logger";
 import {
   GITHUB_ACCEPT_HEADER,
   GITHUB_API_BASE_URL,
@@ -64,6 +65,7 @@ async function githubFetch<T>(path: string): Promise<T> {
     headers.Authorization = `Bearer ${token}`;
   }
 
+  const startTime = performance.now();
   let response: Response;
   try {
     response = await fetch(`${GITHUB_API_BASE_URL}${path}`, {
@@ -71,6 +73,14 @@ async function githubFetch<T>(path: string): Promise<T> {
       next: { revalidate: 0 },
     });
   } catch {
+    const durationMs = Math.round(performance.now() - startTime);
+    log({
+      level: "error",
+      message: "GitHub API network error",
+      route: path,
+      durationMs,
+      errorType: "network_error",
+    });
     throw new GitHubApiError(
       "GitHub API へのネットワーク接続に失敗しました",
       "network_error",
@@ -78,9 +88,22 @@ async function githubFetch<T>(path: string): Promise<T> {
     );
   }
 
+  const durationMs = Math.round(performance.now() - startTime);
+
   if (!response.ok) {
     const errorType = classifyGitHubError(response.status, response.headers);
     const retryAfter = response.headers.get("retry-after");
+    log({
+      level: "error",
+      message: "GitHub API error response",
+      route: path,
+      githubApiStatus: response.status,
+      durationMs,
+      xRateLimitRemaining: response.headers.get("x-ratelimit-remaining"),
+      xRateLimitReset: response.headers.get("x-ratelimit-reset"),
+      retryAfter,
+      errorType,
+    });
     throw new GitHubApiError(
       `GitHub API error: ${response.status}`,
       errorType,
@@ -88,6 +111,16 @@ async function githubFetch<T>(path: string): Promise<T> {
       retryAfter,
     );
   }
+
+  log({
+    level: "info",
+    message: "GitHub API request succeeded",
+    route: path,
+    githubApiStatus: response.status,
+    durationMs,
+    xRateLimitRemaining: response.headers.get("x-ratelimit-remaining"),
+    xRateLimitReset: response.headers.get("x-ratelimit-reset"),
+  });
 
   return response.json() as Promise<T>;
 }
