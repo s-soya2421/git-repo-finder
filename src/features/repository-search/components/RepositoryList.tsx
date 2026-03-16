@@ -3,6 +3,7 @@ import { GitHubApiError } from "@/shared/github/client";
 import { mapSearchResponse } from "../lib/map-search-response";
 import type { SearchResultViewModel } from "../types";
 import { EmptyState } from "./EmptyState";
+import { PaginationNav } from "./PaginationNav";
 import { SearchResultSummary } from "./SearchResultSummary";
 import { RepositoryListItem } from "./RepositoryListItem";
 
@@ -84,6 +85,12 @@ export async function RepositoryList({
           <RepositoryListItem key={repo.id} repository={repo} />
         ))}
       </div>
+      <PaginationNav
+        query={query}
+        page={page}
+        perPage={perPage}
+        totalCount={result.data.totalCount}
+      />
     </div>
   );
 }

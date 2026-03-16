@@ -1,4 +1,5 @@
 import { formatNumber } from "@/shared/lib/format-number";
+import { PerPageSelect } from "./PerPageSelect";
 
 type SearchResultSummaryProps = {
   query: string;
@@ -18,9 +19,12 @@ export function SearchResultSummary({
 
   return (
     <div className="flex flex-col gap-1">
-      <h2 className="text-lg font-semibold">
-        &ldquo;{query}&rdquo; の検索結果
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-lg font-semibold">
+          &ldquo;{query}&rdquo; の検索結果
+        </h2>
+        <PerPageSelect query={query} perPage={perPage} />
+      </div>
       <p className="text-sm text-muted-foreground">
         上位の一致候補を表示中 ・{" "}
         <span>

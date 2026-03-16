@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: PageProps) {
         </Link>
       </header>
       <main className="flex flex-col gap-8">
-        <SearchForm defaultValue={q} />
+        <SearchForm defaultValue={q} perPage={perPage} />
         {q ? (
           <Suspense
             key={`${q}-${page}-${perPage}`}
