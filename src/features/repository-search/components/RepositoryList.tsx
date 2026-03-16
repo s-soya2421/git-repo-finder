@@ -16,6 +16,7 @@ type RepositoryListProps = {
 type FetchResult =
   | { status: "success"; data: SearchResultViewModel }
   | { status: "rate_limit" }
+  | { status: "validation_failed" }
   | { status: "error" };
 
 async function fetchSearchResults(
@@ -33,6 +34,9 @@ async function fetchSearchResults(
         error.type === "rate_limit_secondary"
       ) {
         return { status: "rate_limit" };
+      }
+      if (error.type === "validation_failed") {
+        return { status: "validation_failed" };
       }
     }
     return { status: "error" };
@@ -52,6 +56,17 @@ export async function RepositoryList({
         <p className="text-lg font-medium">アクセスが集中しています</p>
         <p className="text-sm text-muted-foreground">
           少し時間をおいて再度お試しください
+        </p>
+      </div>
+    );
+  }
+
+  if (result.status === "validation_failed") {
+    return (
+      <div className="flex flex-col items-center gap-3 py-16 text-center">
+        <p className="text-lg font-medium">検索条件を見直してください</p>
+        <p className="text-sm text-muted-foreground">
+          入力されたキーワードや条件では検索できませんでした。別のキーワードや条件をお試しください。
         </p>
       </div>
     );
