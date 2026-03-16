@@ -6,6 +6,7 @@ import { SearchForm } from "@/features/repository-search/components/SearchForm";
 import { EmptyState } from "@/features/repository-search/components/EmptyState";
 import { RepositoryList } from "@/features/repository-search/components/RepositoryList";
 import { RepositoryListSkeleton } from "@/features/repository-search/components/RepositoryListSkeleton";
+import { RecentlyViewedList } from "@/features/recently-viewed/components/RecentlyViewedList";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -48,7 +49,10 @@ export default async function Home({ searchParams }: PageProps) {
             <RepositoryList query={q} page={page} perPage={perPage} />
           </Suspense>
         ) : (
-          <EmptyState type="initial" />
+          <>
+            <EmptyState type="initial" />
+            <RecentlyViewedList />
+          </>
         )}
       </main>
     </div>
