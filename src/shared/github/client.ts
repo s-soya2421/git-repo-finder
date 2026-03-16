@@ -4,7 +4,11 @@ import {
   GITHUB_API_BASE_URL,
   GITHUB_API_VERSION,
 } from "./constants";
-import type { GitHubRepositoryResponse, GitHubSearchResponse } from "./schemas";
+import type {
+  GitHubReadmeResponse,
+  GitHubRepositoryResponse,
+  GitHubSearchResponse,
+} from "./schemas";
 
 // ---------------------------------------------------------------------------
 // Error classification
@@ -114,3 +118,18 @@ export const getRepository = cache(async (owner: string, repo: string) => {
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
   );
 });
+
+export const getReadme = cache(
+  async (owner: string, repo: string): Promise<GitHubReadmeResponse | null> => {
+    try {
+      return await githubFetch<GitHubReadmeResponse>(
+        `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`,
+      );
+    } catch (error) {
+      if (error instanceof GitHubApiError && error.type === "not_found") {
+        return null;
+      }
+      throw error;
+    }
+  },
+);

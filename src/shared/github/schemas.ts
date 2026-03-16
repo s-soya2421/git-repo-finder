@@ -35,3 +35,11 @@ export type GitHubSearchResponse = {
 export type GitHubRepositoryResponse = GitHubSearchItem & {
   subscribers_count: number;
 };
+
+/** GitHub REST API: Repository README response */
+export type GitHubReadmeResponse = {
+  content: string;
+  encoding: string;
+  name: string;
+  path: string;
+};
