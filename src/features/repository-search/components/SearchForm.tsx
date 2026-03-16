@@ -9,9 +9,10 @@ import { buildSearchUrl } from "../lib/normalize-search-params";
 
 type SearchFormProps = {
   defaultValue?: string;
+  perPage?: number;
 };
 
-export function SearchForm({ defaultValue = "" }: SearchFormProps) {
+export function SearchForm({ defaultValue = "", perPage = 30 }: SearchFormProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultValue);
 
@@ -19,7 +20,7 @@ export function SearchForm({ defaultValue = "" }: SearchFormProps) {
     e.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
-    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage: 30 }));
+    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage }));
   }
 
   function handleClear() {
