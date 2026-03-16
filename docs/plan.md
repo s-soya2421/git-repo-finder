@@ -4,13 +4,17 @@
 
 ### セットアップ
 
-- [ ] Next.js App Router セットアップ
-- [ ] `next/font` 設定（Google Fonts セルフホスト）
-- [ ] `next.config.ts` に `avatars.githubusercontent.com` を許可ドメイン追加
-- [ ] shadcn/ui 導入
-- [ ] GitHub API クライアント実装 (`shared/github`、React `cache()` 適用)
-- [ ] 環境変数設定 (GitHub Token)
-- [ ] Middleware 実装（URL パラメータ正規化・リダイレクト）
+- [x] Next.js App Router セットアップ
+- [x] `next/font` 設定（Google Fonts セルフホスト）
+- [x] `next.config.ts` に `avatars.githubusercontent.com` を許可ドメイン追加
+- [x] shadcn/ui 導入（button, input, card, avatar, select, badge）
+- [x] Vitest 導入・共通ユーティリティ（format-number, format-relative-date）
+- [x] GitHub API クライアント実装 (`shared/github`、React `cache()` 適用)
+- [x] エラー分類（not_found, rate_limit_primary/secondary, server_error 等）
+- [x] ViewModel 型定義・mapping 関数（検索・詳細）
+- [x] 環境変数設定 (GitHub Token)
+- [x] searchParams の parse / normalize / buildSearchUrl
+- [x] Middleware 実装（URL パラメータ正規化・リダイレクト）
 
 ### 一覧画面
 
@@ -27,7 +31,13 @@
   - [ ] 最終更新日
   - [ ] Topics
   - [ ] License
-- [ ] ページネーション
+- [ ] 空状態・エラー状態
+- [ ] スケルトン UI
+
+### ページネーション
+
+- [ ] ページネーション計算（API 上限 1000 件ガード）
+- [ ] ページネーション UI
 - [ ] 表示件数切替
 
 ### 詳細画面
@@ -41,18 +51,30 @@
   - [ ] License・Topics・最終更新日・Homepage
 - [ ] GitHub 外部リンク導線
 - [ ] 一覧へ戻る導線
-
-### 状態・エラー
-
-- [ ] スケルトン UI（一覧・詳細）
-- [ ] 空状態
-- [ ] エラー状態
+- [ ] スケルトン UI
 - [ ] 404 (`not-found.tsx`)
 
 ### テスト
 
-- [ ] 基本 unit test（pure functions）
+- [x] 基本 unit test（format-number, format-relative-date）
+- [x] API エラー分類テスト（classifyGitHubError）
+- [x] ViewModel mapping テスト（mapSearchResponse, mapRepositoryResponse）
+- [x] searchParams parse / normalize / buildSearchUrl テスト
+- [ ] ページネーション計算テスト
 - [ ] 基本 E2E（主要導線）
+
+---
+
+## Phase 1 実装ブランチ進捗
+
+| # | ブランチ | 状態 | 概要 |
+|---|---|---|---|
+| 1 | `feature/setup-shadcn` | **merged** | shadcn/ui, Vitest, format-number, format-relative-date |
+| 2 | `feature/github-api-client` | **merged** | API client, schemas, ViewModel, mapping |
+| 3 | `feature/search-params-middleware` | **merged** | parse, normalize, buildSearchUrl, middleware |
+| 4 | `feature/search-list-page` | 未着手 | 検索フォーム, 一覧画面, Suspense, 空状態/エラー |
+| 5 | `feature/pagination` | 未着手 | ページネーション計算, ナビUI, 表示件数セレクト |
+| 6 | `feature/repository-detail` | 未着手 | 詳細画面, Intercepting Routes, 404 |
 
 ---
 
