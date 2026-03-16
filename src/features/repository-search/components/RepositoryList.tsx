@@ -73,7 +73,7 @@ export async function RepositoryList({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" aria-live="polite">
       <SearchResultSummary
         query={query}
         totalCount={result.data.totalCount}
