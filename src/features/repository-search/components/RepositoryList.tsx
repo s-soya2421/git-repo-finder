@@ -15,7 +15,7 @@ type RepositoryListProps = {
 
 type FetchResult =
   | { status: "success"; data: SearchResultViewModel }
-  | { status: "rate_limit" }
+  | { status: "rate_limit"; retryAfter: string | null }
   | { status: "validation_failed" }
   | { status: "error" };
 
@@ -33,7 +33,7 @@ async function fetchSearchResults(
         error.type === "rate_limit_primary" ||
         error.type === "rate_limit_secondary"
       ) {
-        return { status: "rate_limit" };
+        return { status: "rate_limit", retryAfter: error.retryAfter };
       }
       if (error.type === "validation_failed") {
         return { status: "validation_failed" };
@@ -51,11 +51,19 @@ export async function RepositoryList({
   const result = await fetchSearchResults(query, page, perPage);
 
   if (result.status === "rate_limit") {
+    const retrySeconds = result.retryAfter
+      ? parseInt(result.retryAfter, 10)
+      : null;
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div
+        className="flex flex-col items-center gap-3 py-16 text-center"
+        role="alert"
+      >
         <p className="text-lg font-medium">アクセスが集中しています</p>
         <p className="text-sm text-muted-foreground">
-          少し時間をおいて再度お試しください
+          {retrySeconds && retrySeconds > 0
+            ? `約${retrySeconds}秒後に再度お試しください`
+            : "少し時間をおいて再度お試しください"}
         </p>
       </div>
     );
@@ -63,7 +71,7 @@ export async function RepositoryList({
 
   if (result.status === "validation_failed") {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center gap-3 py-16 text-center" role="alert">
         <p className="text-lg font-medium">検索条件を見直してください</p>
         <p className="text-sm text-muted-foreground">
           入力されたキーワードや条件では検索できませんでした。別のキーワードや条件をお試しください。
@@ -74,7 +82,7 @@ export async function RepositoryList({
 
   if (result.status === "error") {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center gap-3 py-16 text-center" role="alert">
         <p className="text-lg font-medium">データの取得に失敗しました</p>
         <p className="text-sm text-muted-foreground">
           時間をおいて再度お試しいただくか、検索条件を変更してみてください

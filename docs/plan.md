@@ -80,14 +80,14 @@
 
 ## Phase 2: 品質向上
 
-- [ ] 構造化ログ整備
-- [ ] Vercel Analytics 導入
-- [ ] Vercel Speed Insights 導入
-- [ ] Metadata / robots 制御（index / noindex）
-- [ ] アクセシビリティ微調整
-- [ ] エラーハンドリング改善
-- [ ] 文言調整
-- [ ] `incomplete_results=true` 補足表示
+- [x] 構造化ログ整備（rateLimitResource ヘッダー追加）
+- [x] Vercel Analytics 導入
+- [x] Vercel Speed Insights 導入
+- [x] Metadata / robots 制御（index / noindex）
+- [x] アクセシビリティ微調整（aria-expanded, aria-hidden, aria-label, role="alert/status"）
+- [x] エラーハンドリング改善（rate limit 時の retry-after 表示）
+- [x] 文言調整（incomplete_results メッセージ改善）
+- [x] `incomplete_results=true` 補足表示
 
 ---
 

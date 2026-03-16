@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   },
   description:
     "GitHub リポジトリを検索・比較し、目的に合う候補を素早く見つける",
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

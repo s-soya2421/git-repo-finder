@@ -34,8 +34,8 @@ export function SearchResultSummary({
         </span>
       </p>
       {incompleteResults && (
-        <p className="text-sm text-amber-600 dark:text-amber-400">
-          検索結果が一部のみの可能性があります。条件を絞り込むとより正確な結果が得られます。
+        <p className="text-sm text-amber-600 dark:text-amber-400" role="status">
+          検索結果が不完全な可能性があります。条件を絞り込むとより正確な結果が得られます。
         </p>
       )}
     </div>

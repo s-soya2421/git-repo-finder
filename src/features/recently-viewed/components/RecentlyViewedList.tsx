@@ -48,7 +48,12 @@ export function RecentlyViewedList() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">最近見たリポジトリ</h2>
-        <Button variant="ghost" size="sm" onClick={handleClearAll}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleClearAll}
+          aria-label="最近見たリポジトリをすべて削除"
+        >
           すべて削除
         </Button>
       </div>

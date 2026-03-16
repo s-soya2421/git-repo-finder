@@ -59,7 +59,12 @@ export function FavoriteList() {
         <h2 className="text-lg font-semibold">
           お気に入り（{items.length}件）
         </h2>
-        <Button variant="ghost" size="sm" onClick={handleClearAll}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleClearAll}
+          aria-label="お気に入りをすべて削除"
+        >
           すべて削除
         </Button>
       </div>

@@ -60,7 +60,7 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
           className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           aria-label={`${repository.name} を GitHub で開く`}
         >
-          <ExternalLink className="size-3.5" />
+          <ExternalLink className="size-3.5" aria-hidden="true" />
           GitHub
         </a>
       </div>
@@ -72,6 +72,7 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
+              aria-expanded={isExpanded}
               className="ml-1 text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
               {isExpanded ? "折りたたむ" : "続きを読む"}
@@ -95,7 +96,8 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1">
-          <Star className="size-3.5" />
+          <Star className="size-3.5" aria-hidden="true" />
+          <span className="sr-only">Star数</span>
           {formatNumber(repository.stars)}
         </span>
         {repository.language && <span>{repository.language}</span>}

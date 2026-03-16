@@ -103,6 +103,7 @@ async function githubFetch<T>(path: string): Promise<T> {
       route: path,
       githubApiStatus: response.status,
       durationMs,
+      rateLimitResource: response.headers.get("x-ratelimit-resource"),
       xRateLimitRemaining: response.headers.get("x-ratelimit-remaining"),
       xRateLimitReset: response.headers.get("x-ratelimit-reset"),
       retryAfter,
@@ -122,6 +123,7 @@ async function githubFetch<T>(path: string): Promise<T> {
     route: path,
     githubApiStatus: response.status,
     durationMs,
+    rateLimitResource: response.headers.get("x-ratelimit-resource"),
     xRateLimitRemaining: response.headers.get("x-ratelimit-remaining"),
     xRateLimitReset: response.headers.get("x-ratelimit-reset"),
   });
