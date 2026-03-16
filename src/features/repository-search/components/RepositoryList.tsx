@@ -79,6 +79,7 @@ export async function RepositoryList({
         totalCount={result.data.totalCount}
         page={page}
         perPage={perPage}
+        incompleteResults={result.data.incompleteResults}
       />
       <div className="flex flex-col gap-4">
         {result.data.items.map((repo) => (

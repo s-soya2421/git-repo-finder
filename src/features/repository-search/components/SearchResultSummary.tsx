@@ -6,6 +6,7 @@ type SearchResultSummaryProps = {
   totalCount: number;
   page: number;
   perPage: number;
+  incompleteResults?: boolean;
 };
 
 export function SearchResultSummary({
@@ -13,6 +14,7 @@ export function SearchResultSummary({
   totalCount,
   page,
   perPage,
+  incompleteResults = false,
 }: SearchResultSummaryProps) {
   const start = (page - 1) * perPage + 1;
   const end = Math.min(page * perPage, totalCount);
@@ -31,6 +33,11 @@ export function SearchResultSummary({
           {formatNumber(totalCount)}件中 {start}–{end}件を表示
         </span>
       </p>
+      {incompleteResults && (
+        <p className="text-sm text-amber-600 dark:text-amber-400">
+          検索結果が一部のみの可能性があります。条件を絞り込むとより正確な結果が得られます。
+        </p>
+      )}
     </div>
   );
 }
