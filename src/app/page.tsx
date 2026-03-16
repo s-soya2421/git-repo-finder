@@ -1,11 +1,55 @@
-export default function Home() {
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { parseSearchParams } from "@/features/repository-search/lib/parse-search-params";
+import { SearchForm } from "@/features/repository-search/components/SearchForm";
+import { EmptyState } from "@/features/repository-search/components/EmptyState";
+import { RepositoryList } from "@/features/repository-search/components/RepositoryList";
+import { RepositoryListSkeleton } from "@/features/repository-search/components/RepositoryListSkeleton";
+
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const { q } = parseSearchParams(params);
+
+  if (q) {
+    return {
+      title: `"${q}" の検索結果`,
+      robots: { index: false, follow: true },
+    };
+  }
+
+  return {};
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const { q, page, perPage } = parseSearchParams(params);
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <main className="flex flex-col items-center gap-4">
-        <h1 className="text-3xl font-bold">git-repo-finder</h1>
-        <p className="text-muted-foreground">
-          GitHub リポジトリを検索・比較し、目的に合う候補を素早く見つける
-        </p>
+    <div className="mx-auto min-h-screen max-w-3xl px-4 py-8">
+      <header className="mb-8">
+        <Link href="/" className="text-2xl font-bold hover:opacity-80">
+          git-repo-finder
+        </Link>
+      </header>
+      <main className="flex flex-col gap-8">
+        <SearchForm defaultValue={q} />
+        {q ? (
+          <Suspense
+            key={`${q}-${page}-${perPage}`}
+            fallback={<RepositoryListSkeleton />}
+          >
+            <RepositoryList query={q} page={page} perPage={perPage} />
+          </Suspense>
+        ) : (
+          <EmptyState type="initial" />
+        )}
       </main>
     </div>
   );
