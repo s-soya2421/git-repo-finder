@@ -29,7 +29,7 @@ export function SearchForm({ defaultValue = "", perPage = 30 }: SearchFormProps)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} role="search" className="flex flex-col gap-3">
       <label htmlFor="search-input" className="text-sm font-medium">
         リポジトリを検索
       </label>
