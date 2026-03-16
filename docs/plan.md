@@ -18,41 +18,41 @@
 
 ### 一覧画面
 
-- [ ] 検索フォーム実装
-- [ ] URL search params 連携
-- [ ] GitHub API 連携 (`search/repositories`)
-- [ ] Streaming + Suspense（フォーム即時表示・結果ストリーミング）
-- [ ] 一覧比較情報の表示
-  - [ ] リポジトリ名
-  - [ ] 説明文（先頭 50 文字 + 展開/折りたたみ）
-  - [ ] オーナー
-  - [ ] 主要言語
-  - [ ] Star 数
-  - [ ] 最終更新日
-  - [ ] Topics
-  - [ ] License
-- [ ] 空状態・エラー状態
-- [ ] スケルトン UI
+- [x] 検索フォーム実装
+- [x] URL search params 連携
+- [x] GitHub API 連携 (`search/repositories`)
+- [x] Streaming + Suspense（フォーム即時表示・結果ストリーミング）
+- [x] 一覧比較情報の表示
+  - [x] リポジトリ名
+  - [x] 説明文（先頭 50 文字 + 展開/折りたたみ）
+  - [x] オーナー
+  - [x] 主要言語
+  - [x] Star 数
+  - [x] 最終更新日
+  - [x] Topics
+  - [x] License
+- [x] 空状態・エラー状態
+- [x] スケルトン UI
 
 ### ページネーション
 
-- [ ] ページネーション計算（API 上限 1000 件ガード）
-- [ ] ページネーション UI
-- [ ] 表示件数切替
+- [x] ページネーション計算（API 上限 1000 件ガード）
+- [x] ページネーション UI
+- [x] 表示件数切替
 
 ### 詳細画面
 
-- [ ] 詳細ページ実装 (`/repositories/[owner]/[repo]`)
-- [ ] Intercepting Routes 実装（一覧からオーバーレイ・直接アクセスで独立ページ）
-- [ ] GitHub API 連携 (`repos/{owner}/{repo}`)
-- [ ] 表示項目
-  - [ ] リポジトリ名・オーナーアイコン（next/image）・説明文
-  - [ ] 主要言語・Star 数・Watcher 数・Fork 数・Issue 数
-  - [ ] License・Topics・最終更新日・Homepage
-- [ ] GitHub 外部リンク導線
-- [ ] 一覧へ戻る導線
-- [ ] スケルトン UI
-- [ ] 404 (`not-found.tsx`)
+- [x] 詳細ページ実装 (`/repositories/[owner]/[repo]`)
+- [x] Intercepting Routes 実装（一覧からオーバーレイ・直接アクセスで独立ページ）
+- [x] GitHub API 連携 (`repos/{owner}/{repo}`)
+- [x] 表示項目
+  - [x] リポジトリ名・オーナーアイコン（next/image）・説明文
+  - [x] 主要言語・Star 数・Watcher 数・Fork 数・Issue 数
+  - [x] License・Topics・最終更新日・Homepage
+- [x] GitHub 外部リンク導線
+- [x] 一覧へ戻る導線
+- [x] スケルトン UI
+- [x] 404 (`not-found.tsx`)
 
 ### テスト
 
@@ -60,7 +60,7 @@
 - [x] API エラー分類テスト（classifyGitHubError）
 - [x] ViewModel mapping テスト（mapSearchResponse, mapRepositoryResponse）
 - [x] searchParams parse / normalize / buildSearchUrl テスト
-- [ ] ページネーション計算テスト
+- [x] ページネーション計算テスト
 - [ ] 基本 E2E（主要導線）
 
 ---
@@ -72,9 +72,9 @@
 | 1 | `feature/setup-shadcn` | **merged** | shadcn/ui, Vitest, format-number, format-relative-date |
 | 2 | `feature/github-api-client` | **merged** | API client, schemas, ViewModel, mapping |
 | 3 | `feature/search-params-middleware` | **merged** | parse, normalize, buildSearchUrl, middleware |
-| 4 | `feature/search-list-page` | 未着手 | 検索フォーム, 一覧画面, Suspense, 空状態/エラー |
-| 5 | `feature/pagination` | 未着手 | ページネーション計算, ナビUI, 表示件数セレクト |
-| 6 | `feature/repository-detail` | 未着手 | 詳細画面, Intercepting Routes, 404 |
+| 4 | `feature/search-list-page` | **merged** | 検索フォーム, 一覧画面, Suspense, 空状態/エラー |
+| 5 | `feature/pagination` | **merged** | ページネーション計算, ナビUI, 表示件数セレクト |
+| 6 | `feature/repository-detail` | **done** | 詳細画面, Intercepting Routes, 404 |
 
 ---
 
