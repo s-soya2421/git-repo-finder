@@ -9,20 +9,22 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { buildSearchUrl } from "../lib/normalize-search-params";
+import type { SortOption } from "../lib/parse-search-params";
 
 const PER_PAGE_OPTIONS = [10, 30, 50] as const;
 
 type PerPageSelectProps = {
   query: string;
   perPage: number;
+  sort: SortOption;
 };
 
-export function PerPageSelect({ query, perPage }: PerPageSelectProps) {
+export function PerPageSelect({ query, perPage, sort }: PerPageSelectProps) {
   const router = useRouter();
 
   function handleChange(value: number | null) {
     if (value === null) return;
-    router.push(buildSearchUrl({ q: query, page: 1, perPage: value }));
+    router.push(buildSearchUrl({ q: query, page: 1, perPage: value, sort }));
   }
 
   return (

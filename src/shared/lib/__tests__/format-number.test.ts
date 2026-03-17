@@ -23,4 +23,9 @@ describe("formatNumber", () => {
     expect(formatNumber(1234567)).toBe("1.2M");
     expect(formatNumber(12345678)).toBe("12.3M");
   });
+
+  it("returns plain string for negative numbers", () => {
+    expect(formatNumber(-1)).toBe("-1");
+    expect(formatNumber(-999)).toBe("-999");
+  });
 });

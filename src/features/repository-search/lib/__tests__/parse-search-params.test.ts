@@ -4,7 +4,7 @@ import { parseSearchParams } from "../parse-search-params";
 describe("parseSearchParams", () => {
   it("parses valid params", () => {
     const result = parseSearchParams({ q: "nextjs", page: "2", perPage: "50" });
-    expect(result).toEqual({ q: "nextjs", page: 2, perPage: 50 });
+    expect(result).toEqual({ q: "nextjs", page: 2, perPage: 50, sort: "" });
   });
 
   it("trims q", () => {
@@ -47,4 +47,20 @@ describe("parseSearchParams", () => {
   it("handles array values by ignoring them", () => {
     expect(parseSearchParams({ q: ["a", "b"] }).q).toBe("");
   });
+
+  it("defaults sort to empty string when missing", () => {
+    expect(parseSearchParams({}).sort).toBe("");
+  });
+
+  it("accepts allowed sort values", () => {
+    expect(parseSearchParams({ sort: "stars" }).sort).toBe("stars");
+    expect(parseSearchParams({ sort: "updated" }).sort).toBe("updated");
+    expect(parseSearchParams({ sort: "" }).sort).toBe("");
+  });
+
+  it("defaults sort to empty string for disallowed values", () => {
+    expect(parseSearchParams({ sort: "forks" }).sort).toBe("");
+    expect(parseSearchParams({ sort: "invalid" }).sort).toBe("");
+  });
+
 });

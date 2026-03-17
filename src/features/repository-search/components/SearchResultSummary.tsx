@@ -1,11 +1,14 @@
 import { formatNumber } from "@/shared/lib/format-number";
 import { PerPageSelect } from "./PerPageSelect";
+import { SortSelect } from "./SortSelect";
+import type { SortOption } from "../lib/parse-search-params";
 
 type SearchResultSummaryProps = {
   query: string;
   totalCount: number;
   page: number;
   perPage: number;
+  sort: SortOption;
   incompleteResults?: boolean;
 };
 
@@ -14,6 +17,7 @@ export function SearchResultSummary({
   totalCount,
   page,
   perPage,
+  sort,
   incompleteResults = false,
 }: SearchResultSummaryProps) {
   const start = (page - 1) * perPage + 1;
@@ -25,7 +29,10 @@ export function SearchResultSummary({
         <h2 className="text-lg font-semibold">
           &ldquo;{query}&rdquo; の検索結果
         </h2>
-        <PerPageSelect query={query} perPage={perPage} />
+        <div className="flex items-center gap-2">
+          <SortSelect query={query} perPage={perPage} sort={sort} />
+          <PerPageSelect query={query} perPage={perPage} sort={sort} />
+        </div>
       </div>
       <p className="text-sm text-muted-foreground">
         上位の一致候補を表示中 ・{" "}

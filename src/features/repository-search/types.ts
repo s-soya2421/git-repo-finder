@@ -10,6 +10,9 @@ export type RepositoryListItemViewModel = {
   topics: string[];
   stars: number;
   updatedAt: string;
+  pushedAt: string;
+  archived: boolean;
+  disabled: boolean;
   htmlUrl: string;
 };
 

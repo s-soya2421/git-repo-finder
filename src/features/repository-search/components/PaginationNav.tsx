@@ -3,12 +3,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { calcPagination } from "../lib/calc-pagination";
 import { buildSearchUrl } from "../lib/normalize-search-params";
+import type { SortOption } from "../lib/parse-search-params";
 
 type PaginationNavProps = {
   query: string;
   page: number;
   perPage: number;
   totalCount: number;
+  sort: SortOption;
 };
 
 export function PaginationNav({
@@ -16,6 +18,7 @@ export function PaginationNav({
   page,
   perPage,
   totalCount,
+  sort,
 }: PaginationNavProps) {
   const pagination = calcPagination(totalCount, page, perPage);
 
@@ -33,6 +36,7 @@ export function PaginationNav({
                 q: query,
                 page: pagination.currentPage - 1,
                 perPage,
+                sort,
               })}
               className={cn(
                 "inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors",
@@ -63,7 +67,7 @@ export function PaginationNav({
               </span>
             ) : (
               <Link
-                href={buildSearchUrl({ q: query, page: p, perPage })}
+                href={buildSearchUrl({ q: query, page: p, perPage, sort })}
                 className="inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors hover:bg-muted"
               >
                 {p}
@@ -79,6 +83,7 @@ export function PaginationNav({
                 q: query,
                 page: pagination.currentPage + 1,
                 perPage,
+                sort,
               })}
               className={cn(
                 "inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors",

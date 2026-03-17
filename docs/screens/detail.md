@@ -60,7 +60,7 @@
 | `RepositoryDetail` | Server | 各セクションの合成 | `src/features/repository-detail/components/RepositoryDetail.tsx` |
 | `RepositoryHeader` | Server | アイコン・名前・説明文 | `src/features/repository-detail/components/RepositoryHeader.tsx` |
 | `RepositoryStats` | Server | Star/Watcher/Fork/Issue | `src/features/repository-detail/components/RepositoryStats.tsx` |
-| `RepositoryMeta` | Server | 言語/License/Topics/更新日/Homepage | `src/features/repository-detail/components/RepositoryMeta.tsx` |
+| `RepositoryMeta` | Server | 言語/License/Topics/更新日/Homepage/Security Signals | `src/features/repository-detail/components/RepositoryMeta.tsx` |
 | `RepositoryReadme` | Server | README Markdown レンダリング | `src/features/repository-detail/components/RepositoryReadme.tsx` |
 | `ExternalLinks` | Server | GitHub ボタン + 戻るボタン wrapper | `src/features/repository-detail/components/ExternalLinks.tsx` |
 | `BackToListButton` | Client | `router.back()` | `src/features/repository-detail/components/BackToListButton.tsx` |
@@ -90,10 +90,12 @@ page.tsx [Server]
 
 ```
 URL params: { owner, repo }
-  → page.tsx: Promise.all([getRepository(), getReadme()]) [並列取得]
+  → page.tsx: getRepository() で基本情報取得
+  → Promise.all([getReadme(), getLatestRelease(), getSecurityPolicyStatus(), getDependabotStatus(), getLatestCiStatus()]) [並列取得]
   → mapRepositoryResponse() → RepositoryDetailViewModel
+  → securitySignals を組み立て（取得失敗は unknown）
   → Base64 デコード（README）
-  → <RepositoryDetail repository={vm} readmeContent={string|null} />
+  → <RepositoryDetail repository={vm} readmeContent={string|null} securitySignals={...} />
   → 副作用: RecentlyViewedRecorder が LocalStorage に記録
   → 副作用: FavoriteButton が LocalStorage を購読
 ```
@@ -130,7 +132,17 @@ URL params: { owner, repo }
 | License | Badge (outline)。SPDX ID。null なら非表示 |
 | Topics | Badge (secondary)。全件表示 |
 | 最終更新日 | `formatRelativeDate()` で相対表示 |
+| コード最終更新日 | `pushed_at` を `formatRelativeDate()` で相対表示。180日以上で「要注意」 |
+| Archived / Disabled | true のとき警告バッジ表示 |
 | Homepage | 外部リンク（target=_blank）。null なら非表示 |
+
+### Security Signals
+
+| 項目 | 表示ルール |
+|---|---|
+| SECURITY.md | present / absent / unknown をバッジ表示 |
+| Dependabot | present / absent / unknown をバッジ表示 |
+| CI | success / failed / none / unknown をバッジ表示 |
 
 ### README
 
@@ -171,6 +183,7 @@ URL params: { owner, repo }
 - README の HTML は `rehypeRaw` でレンダリング
 - `getReadme()` が 404 の場合は null を返す（エラーにしない）
 - レート制限時はリポジトリ情報・README ともに取得不可
+- Security Signals の取得失敗は unknown として表示（ページ自体は表示継続）
 - `BackToListButton` は `router.back()` なので、直接アクセス時は前のページに戻る（一覧とは限らない）
 
 ---

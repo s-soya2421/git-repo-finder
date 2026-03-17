@@ -6,6 +6,9 @@ import Link from "next/link";
 import { ExternalLink, Star } from "lucide-react";
 import { formatNumber } from "@/shared/lib/format-number";
 import { formatRelativeDate } from "@/shared/lib/format-relative-date";
+import { classifyCodeFreshness } from "@/shared/lib/classify-code-freshness";
+import { Badge } from "@/shared/ui/badge";
+import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 import type { RepositoryListItemViewModel } from "../types";
 
 const DESCRIPTION_TRUNCATE_LENGTH = 50;
@@ -17,6 +20,7 @@ type RepositoryListItemProps = {
 
 export function RepositoryListItem({ repository }: RepositoryListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const codeFreshness = classifyCodeFreshness(repository.pushedAt);
 
   const description = repository.description;
   const shouldTruncate =
@@ -38,33 +42,46 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
           <Image
             src={repository.ownerAvatarUrl}
             alt={`${repository.owner} のアバター`}
-            width={20}
-            height={20}
-            className="size-5 shrink-0 rounded-full"
+            width={24}
+            height={24}
+            className="size-6 shrink-0 rounded-full"
           />
           <Link
             href={`/repositories/${repository.owner}/${repository.name}`}
-            className="text-base font-semibold leading-snug text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="group/repo text-base font-semibold leading-snug text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
-            <span className="font-normal text-muted-foreground">{repository.owner}</span>
-            <span className="text-muted-foreground/60">/</span>
+            <span className="font-semibold text-muted-foreground group-hover/repo:text-inherit">{repository.owner}</span>
+            <span className="text-muted-foreground/60 group-hover/repo:text-inherit">/</span>
             {repository.name}
           </Link>
         </div>
-        <a
-          href={repository.htmlUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-          aria-label={`${repository.name} を GitHub で開く`}
-        >
-          <ExternalLink className="size-3.5" aria-hidden="true" />
-          GitHub
-        </a>
+        <div className="flex shrink-0 items-center gap-1">
+          <FavoriteButton
+            repository={{
+              id: repository.id,
+              owner: repository.owner,
+              repo: repository.name,
+              description: repository.description,
+              language: repository.language,
+              stars: repository.stars,
+            }}
+            compact
+          />
+          <a
+            href={repository.htmlUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            aria-label={`${repository.name} を GitHub で開く`}
+          >
+            <ExternalLink className="size-3.5" aria-hidden="true" />
+            GitHub
+          </a>
+        </div>
       </div>
 
       {displayDescription !== null && (
-        <div className="text-sm text-muted-foreground pl-[30px]">
+        <div className="text-sm text-muted-foreground pl-[34px]">
           <p>{displayDescription}</p>
           {shouldTruncate && (
             <button
@@ -80,7 +97,7 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
       )}
 
       {visibleTopics.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 pl-[30px]">
+        <div className="flex flex-wrap gap-1.5 pl-[34px]">
           {visibleTopics.map((topic) => (
             <span
               key={topic}
@@ -97,7 +114,16 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pl-[30px] text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-1.5 pl-[34px]">
+        {repository.archived && <Badge variant="destructive">Archived</Badge>}
+        {repository.disabled && <Badge variant="destructive">Disabled</Badge>}
+        <Badge variant={codeFreshness === "stale" ? "destructive" : "outline"}>
+          コード更新: {formatRelativeDate(repository.pushedAt)}
+          {codeFreshness === "stale" ? "（要注意）" : ""}
+        </Badge>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pl-[34px] text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <Star className="size-3.5" aria-hidden="true" />
           <span className="sr-only">Star数</span>

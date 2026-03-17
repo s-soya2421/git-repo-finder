@@ -12,6 +12,7 @@ import {
 
 type FavoriteButtonProps = {
   repository: StoredRepository;
+  compact?: boolean;
 };
 
 function subscribeToStorage(callback: () => void) {
@@ -23,7 +24,7 @@ function getServerSnapshot() {
   return false;
 }
 
-export function FavoriteButton({ repository }: FavoriteButtonProps) {
+export function FavoriteButton({ repository, compact = false }: FavoriteButtonProps) {
   const getSnapshot = useCallback(
     () => isFavorite(repository.id),
     [repository.id],
@@ -43,6 +44,24 @@ export function FavoriteButton({ repository }: FavoriteButtonProps) {
     }
     // Force re-render by dispatching a storage event
     window.dispatchEvent(new Event("storage"));
+  }
+
+  if (compact) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleToggle}
+        aria-label={favorited ? "お気に入りから削除" : "お気に入りに追加"}
+        aria-pressed={favorited}
+        className="size-8"
+      >
+        <Heart
+          className={`size-4 ${favorited ? "fill-current text-red-500" : ""}`}
+          aria-hidden="true"
+        />
+      </Button>
+    );
   }
 
   return (

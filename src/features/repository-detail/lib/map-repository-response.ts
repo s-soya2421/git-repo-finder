@@ -18,6 +18,9 @@ export function mapRepositoryResponse(
     forks: response.forks_count,
     openIssues: response.open_issues_count,
     updatedAt: response.updated_at,
+    pushedAt: response.pushed_at,
+    archived: response.archived,
+    disabled: response.disabled,
     homepage: response.homepage,
     htmlUrl: response.html_url,
   };

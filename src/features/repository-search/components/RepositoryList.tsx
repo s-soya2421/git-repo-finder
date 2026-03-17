@@ -2,6 +2,7 @@ import { searchRepositories } from "@/shared/github/client";
 import { GitHubApiError } from "@/shared/github/client";
 import { mapSearchResponse } from "../lib/map-search-response";
 import type { SearchResultViewModel } from "../types";
+import type { SortOption } from "../lib/parse-search-params";
 import { EmptyState } from "./EmptyState";
 import { PaginationNav } from "./PaginationNav";
 import { SearchResultSummary } from "./SearchResultSummary";
@@ -11,6 +12,7 @@ type RepositoryListProps = {
   query: string;
   page: number;
   perPage: number;
+  sort: SortOption;
 };
 
 type FetchResult =
@@ -23,9 +25,11 @@ async function fetchSearchResults(
   query: string,
   page: number,
   perPage: number,
+  sort?: string,
+  order?: string,
 ): Promise<FetchResult> {
   try {
-    const raw = await searchRepositories(query, page, perPage);
+    const raw = await searchRepositories(query, page, perPage, sort, order);
     return { status: "success", data: mapSearchResponse(raw) };
   } catch (error) {
     if (error instanceof GitHubApiError) {
@@ -47,8 +51,11 @@ export async function RepositoryList({
   query,
   page,
   perPage,
+  sort,
 }: RepositoryListProps) {
-  const result = await fetchSearchResults(query, page, perPage);
+  const apiSort = sort || undefined;
+  const apiOrder = sort === "stars" ? "desc" : sort === "updated" ? "desc" : undefined;
+  const result = await fetchSearchResults(query, page, perPage, apiSort, apiOrder);
 
   if (result.status === "rate_limit") {
     const retrySeconds = result.retryAfter
@@ -109,6 +116,7 @@ export async function RepositoryList({
         totalCount={result.data.totalCount}
         page={page}
         perPage={perPage}
+        sort={sort}
         incompleteResults={result.data.incompleteResults}
       />
       <div className="flex flex-col gap-4">
@@ -121,6 +129,7 @@ export async function RepositoryList({
         page={page}
         perPage={perPage}
         totalCount={result.data.totalCount}
+        sort={sort}
       />
     </div>
   );

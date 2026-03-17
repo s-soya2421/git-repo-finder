@@ -7,8 +7,10 @@ import {
 } from "./constants";
 import type {
   GitHubReadmeResponse,
+  GitHubReleaseResponse,
   GitHubRepositoryResponse,
   GitHubSearchResponse,
+  GitHubWorkflowRunsResponse,
 } from "./schemas";
 
 // ---------------------------------------------------------------------------
@@ -37,6 +39,9 @@ export class GitHubApiError extends Error {
   }
 }
 
+export type GitHubPresenceStatus = "present" | "absent" | "unknown";
+export type GitHubCiStatus = "success" | "failed" | "none" | "unknown";
+
 export function classifyGitHubError(
   status: number,
   headers: Headers,
@@ -59,7 +64,10 @@ export function classifyGitHubError(
 // Fetch helper
 // ---------------------------------------------------------------------------
 
-async function githubFetch<T>(path: string): Promise<T> {
+async function githubFetch<T>(
+  path: string,
+  options?: { revalidate?: number },
+): Promise<T> {
   const token = process.env.GITHUB_TOKEN;
 
   const headers: Record<string, string> = {
@@ -75,7 +83,7 @@ async function githubFetch<T>(path: string): Promise<T> {
   try {
     response = await fetch(`${GITHUB_API_BASE_URL}${path}`, {
       headers,
-      next: { revalidate: 0 },
+      next: { revalidate: options?.revalidate ?? 0 },
     });
   } catch {
     const durationMs = Math.round(performance.now() - startTime);
@@ -135,17 +143,52 @@ async function githubFetch<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+function encodeContentPath(path: string): string {
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+async function getFilePresence(
+  owner: string,
+  repo: string,
+  filePath: string,
+): Promise<GitHubPresenceStatus> {
+  try {
+    await githubFetch<unknown>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeContentPath(filePath)}`,
+      { revalidate: 300 },
+    );
+    return "present";
+  } catch (error) {
+    if (error instanceof GitHubApiError && error.type === "not_found") {
+      return "absent";
+    }
+    return "unknown";
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Public API (cached per request)
 // ---------------------------------------------------------------------------
 
 export const searchRepositories = cache(
-  async (query: string, page: number, perPage: number) => {
+  async (
+    query: string,
+    page: number,
+    perPage: number,
+    sort?: string,
+    order?: string,
+  ) => {
     const params = new URLSearchParams({
       q: query,
       page: String(page),
       per_page: String(perPage),
     });
+    if (sort) {
+      params.set("sort", sort);
+    }
+    if (order) {
+      params.set("order", order);
+    }
     return githubFetch<GitHubSearchResponse>(
       `/search/repositories?${params.toString()}`,
     );
@@ -155,6 +198,7 @@ export const searchRepositories = cache(
 export const getRepository = cache(async (owner: string, repo: string) => {
   return githubFetch<GitHubRepositoryResponse>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+    { revalidate: 60 },
   );
 });
 
@@ -163,12 +207,84 @@ export const getReadme = cache(
     try {
       return await githubFetch<GitHubReadmeResponse>(
         `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`,
+        { revalidate: 60 },
       );
     } catch (error) {
       if (error instanceof GitHubApiError && error.type === "not_found") {
         return null;
       }
       throw error;
+    }
+  },
+);
+
+export const getLatestRelease = cache(
+  async (owner: string, repo: string): Promise<GitHubReleaseResponse | null> => {
+    try {
+      return await githubFetch<GitHubReleaseResponse>(
+        `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases/latest`,
+        { revalidate: 60 },
+      );
+    } catch (error) {
+      if (error instanceof GitHubApiError && error.type === "not_found") {
+        return null;
+      }
+      throw error;
+    }
+  },
+);
+
+const SECURITY_POLICY_CANDIDATE_PATHS = [
+  ".github/SECURITY.md",
+  "SECURITY.md",
+  "docs/SECURITY.md",
+] as const;
+
+export const getSecurityPolicyStatus = cache(
+  async (owner: string, repo: string): Promise<GitHubPresenceStatus> => {
+    let hasUnknown = false;
+
+    for (const path of SECURITY_POLICY_CANDIDATE_PATHS) {
+      const presence = await getFilePresence(owner, repo, path);
+      if (presence === "present") {
+        return "present";
+      }
+      if (presence === "unknown") {
+        hasUnknown = true;
+      }
+    }
+
+    return hasUnknown ? "unknown" : "absent";
+  },
+);
+
+export const getDependabotStatus = cache(
+  async (owner: string, repo: string): Promise<GitHubPresenceStatus> => {
+    return getFilePresence(owner, repo, ".github/dependabot.yml");
+  },
+);
+
+export const getLatestCiStatus = cache(
+  async (owner: string, repo: string): Promise<GitHubCiStatus> => {
+    try {
+      const params = new URLSearchParams({
+        status: "completed",
+        per_page: "1",
+      });
+      const response = await githubFetch<GitHubWorkflowRunsResponse>(
+        `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/actions/runs?${params.toString()}`,
+        { revalidate: 60 },
+      );
+
+      if (response.total_count === 0 || response.workflow_runs.length === 0) {
+        return "none";
+      }
+
+      return response.workflow_runs[0]?.conclusion === "success"
+        ? "success"
+        : "failed";
+    } catch {
+      return "unknown";
     }
   },
 );

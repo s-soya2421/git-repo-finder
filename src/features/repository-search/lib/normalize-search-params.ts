@@ -12,6 +12,7 @@ export function normalizeSearchParams(
   const rawQ = typeof params.q === "string" ? params.q : "";
   const rawPage = typeof params.page === "string" ? params.page : "";
   const rawPerPage = typeof params.perPage === "string" ? params.perPage : "";
+  const rawSort = typeof params.sort === "string" ? params.sort : "";
 
   // Check if any value was normalized
   const qNormalized = rawQ !== parsed.q;
@@ -19,8 +20,10 @@ export function normalizeSearchParams(
     rawPage !== "" && String(parsed.page) !== rawPage;
   const perPageNormalized =
     rawPerPage !== "" && String(parsed.perPage) !== rawPerPage;
+  const sortNormalized =
+    rawSort !== "" && rawSort !== parsed.sort;
 
-  if (qNormalized || pageNormalized || perPageNormalized) {
+  if (qNormalized || pageNormalized || perPageNormalized || sortNormalized) {
     return parsed;
   }
 
@@ -29,7 +32,7 @@ export function normalizeSearchParams(
 
 /**
  * Build a URL search string from parsed params.
- * Omits defaults: page=1 and perPage=30 are dropped.
+ * Omits defaults: page=1, perPage=30, sort="" are dropped.
  */
 export function buildSearchUrl(params: ParsedSearchParams): string {
   const searchParams = new URLSearchParams();
@@ -42,6 +45,9 @@ export function buildSearchUrl(params: ParsedSearchParams): string {
   }
   if (params.perPage !== 30) {
     searchParams.set("perPage", String(params.perPage));
+  }
+  if (params.sort) {
+    searchParams.set("sort", params.sort);
   }
 
   const qs = searchParams.toString();
