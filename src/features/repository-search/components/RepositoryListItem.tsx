@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ExternalLink, Star } from "lucide-react";
 import { formatNumber } from "@/shared/lib/format-number";
 import { formatRelativeDate } from "@/shared/lib/format-relative-date";
+import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
 import type { RepositoryListItemViewModel } from "../types";
 
 const DESCRIPTION_TRUNCATE_LENGTH = 50;
@@ -51,16 +52,29 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
             {repository.name}
           </Link>
         </div>
-        <a
-          href={repository.htmlUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-          aria-label={`${repository.name} を GitHub で開く`}
-        >
-          <ExternalLink className="size-3.5" aria-hidden="true" />
-          GitHub
-        </a>
+        <div className="flex shrink-0 items-center gap-1">
+          <FavoriteButton
+            repository={{
+              id: repository.id,
+              owner: repository.owner,
+              repo: repository.name,
+              description: repository.description,
+              language: repository.language,
+              stars: repository.stars,
+            }}
+            compact
+          />
+          <a
+            href={repository.htmlUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            aria-label={`${repository.name} を GitHub で開く`}
+          >
+            <ExternalLink className="size-3.5" aria-hidden="true" />
+            GitHub
+          </a>
+        </div>
       </div>
 
       {displayDescription !== null && (
