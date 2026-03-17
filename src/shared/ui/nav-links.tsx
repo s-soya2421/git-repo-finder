@@ -24,8 +24,8 @@ export function NavLinks() {
                 aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${
                   isActive
-                    ? "bg-accent text-accent-foreground font-medium"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    ? "bg-white/15 text-white font-medium"
+                    : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <Icon className="size-4" aria-hidden="true" />

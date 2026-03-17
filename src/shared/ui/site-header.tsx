@@ -3,10 +3,10 @@ import { NavLinks } from "./nav-links";
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {
   return (
-    <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-white/10 bg-[oklch(0.2_0.02_260)] text-white sticky top-0 z-50">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold hover:opacity-80">
+          <Link href="/" className="text-base font-semibold hover:opacity-80">
             git-repo-finder
           </Link>
           <NavLinks />
