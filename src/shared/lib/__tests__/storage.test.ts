@@ -41,3 +41,23 @@ describe("storage", () => {
     });
   });
 });
+
+describe("storage SSR guard", () => {
+  beforeEach(() => {
+    // Ensure window is undefined (simulating SSR)
+    vi.stubGlobal("window", undefined);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("getStorageItems returns empty array when window is undefined", () => {
+    expect(getStorageItems("test")).toEqual([]);
+  });
+
+  it("setStorageItems does nothing when window is undefined", () => {
+    // Should not throw
+    expect(() => setStorageItems("test", [{ id: 1 }])).not.toThrow();
+  });
+});

@@ -64,4 +64,17 @@ describe("buildSearchUrl", () => {
   it("returns / when q is empty", () => {
     expect(buildSearchUrl({ q: "", page: 1, perPage: 30 })).toBe("/");
   });
+
+  it("encodes special characters in q", () => {
+    const url = buildSearchUrl({ q: "foo&bar=baz", page: 1, perPage: 30 });
+    expect(url).toBe("/?q=foo%26bar%3Dbaz");
+  });
+
+  it("encodes Japanese characters in q", () => {
+    const url = buildSearchUrl({ q: "日本語", page: 1, perPage: 30 });
+    expect(url).toContain("q=");
+    // URLSearchParams encodes as percent-encoded UTF-8
+    const parsed = new URLSearchParams(url.replace("/?", ""));
+    expect(parsed.get("q")).toBe("日本語");
+  });
 });
