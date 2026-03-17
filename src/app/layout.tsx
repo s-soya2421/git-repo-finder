@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SiteFooter } from "@/shared/ui/site-footer";
 import { SiteHeader } from "@/shared/ui/site-header";
 import { ThemeProvider } from "@/shared/ui/theme-provider";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
@@ -41,10 +42,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <SiteHeader>
-            <ThemeToggle />
-          </SiteHeader>
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader>
+              <ThemeToggle />
+            </SiteHeader>
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </div>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
