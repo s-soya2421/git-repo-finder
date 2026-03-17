@@ -1,7 +1,5 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
 
 type RepositoryReadmeProps = {
   content: string | null;
@@ -22,10 +20,7 @@ export function RepositoryReadme({ content }: RepositoryReadmeProps) {
     <div className="rounded-lg border border-border p-6">
       <h2 className="mb-4 text-lg font-semibold">README</h2>
       <div className="prose prose-sm max-w-none dark:prose-invert">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw, rehypeSanitize]}
-        >
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {content}
         </ReactMarkdown>
       </div>
