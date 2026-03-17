@@ -44,7 +44,7 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
           />
           <Link
             href={`/repositories/${repository.owner}/${repository.name}`}
-            className="text-base font-semibold leading-snug text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="text-base font-semibold leading-snug text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             <span className="font-normal text-muted-foreground">{repository.owner}</span>
             <span className="text-muted-foreground/60">/</span>
@@ -71,9 +71,9 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
               aria-expanded={isExpanded}
-              className="mt-1 text-xs font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              className="mt-1 text-xs font-semibold text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              {isExpanded ? "折りたたむ" : "…続きを読む"}
+              {isExpanded ? "折りたたむ" : "続きを読む"}
             </button>
           )}
         </div>
