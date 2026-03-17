@@ -9,10 +9,12 @@ import { formatRelativeDate } from "@/shared/lib/format-relative-date";
 import { classifyCodeFreshness } from "@/shared/lib/classify-code-freshness";
 import { Badge } from "@/shared/ui/badge";
 import { FavoriteButton } from "@/features/favorites/components/FavoriteButton";
+import {
+  truncateDescription,
+  shouldTruncateDescription,
+  sliceVisibleTopics,
+} from "../lib/display-helpers";
 import type { RepositoryListItemViewModel } from "../types";
-
-const DESCRIPTION_TRUNCATE_LENGTH = 50;
-const MAX_VISIBLE_TOPICS = 3;
 
 type RepositoryListItemProps = {
   repository: RepositoryListItemViewModel;
@@ -22,18 +24,10 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const codeFreshness = classifyCodeFreshness(repository.pushedAt);
 
-  const description = repository.description;
-  const shouldTruncate =
-    description !== null && description.length > DESCRIPTION_TRUNCATE_LENGTH;
-  const displayDescription =
-    description === null
-      ? null
-      : shouldTruncate && !isExpanded
-        ? description.slice(0, DESCRIPTION_TRUNCATE_LENGTH) + "…"
-        : description;
+  const displayDescription = truncateDescription(repository.description, isExpanded);
+  const shouldTruncate = shouldTruncateDescription(repository.description);
 
-  const visibleTopics = repository.topics.slice(0, MAX_VISIBLE_TOPICS);
-  const hiddenTopicCount = repository.topics.length - MAX_VISIBLE_TOPICS;
+  const { visibleTopics, hiddenTopicCount } = sliceVisibleTopics(repository.topics);
 
   return (
     <article className="flex flex-col gap-2 border-b border-border py-4 last:border-b-0">
