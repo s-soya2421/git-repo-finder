@@ -66,19 +66,19 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
       </div>
 
       {displayDescription !== null && (
-        <p className="text-sm text-muted-foreground">
-          {displayDescription}
+        <div className="text-sm text-muted-foreground">
+          <p>{displayDescription}</p>
           {shouldTruncate && (
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
               aria-expanded={isExpanded}
-              className="ml-1 text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              className="mt-1 text-xs font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              {isExpanded ? "折りたたむ" : "続きを読む"}
+              {isExpanded ? "折りたたむ" : "…続きを読む"}
             </button>
           )}
-        </p>
+        </div>
       )}
 
       {visibleTopics.length > 0 && (
