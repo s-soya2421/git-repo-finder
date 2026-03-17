@@ -15,7 +15,7 @@ type RepositoryListProps = {
 
 type FetchResult =
   | { status: "success"; data: SearchResultViewModel }
-  | { status: "rate_limit"; retryAfter: string | null }
+  | { status: "rate_limit"; retryAfter: string | null; resetAt: Date | null }
   | { status: "validation_failed" }
   | { status: "error" };
 
@@ -33,7 +33,7 @@ async function fetchSearchResults(
         error.type === "rate_limit_primary" ||
         error.type === "rate_limit_secondary"
       ) {
-        return { status: "rate_limit", retryAfter: error.retryAfter };
+        return { status: "rate_limit", retryAfter: error.retryAfter, resetAt: error.resetAt };
       }
       if (error.type === "validation_failed") {
         return { status: "validation_failed" };
@@ -54,16 +54,23 @@ export async function RepositoryList({
     const retrySeconds = result.retryAfter
       ? parseInt(result.retryAfter, 10)
       : null;
+    const resetTime = result.resetAt
+      ? result.resetAt.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+      : null;
     return (
       <div
         className="flex flex-col items-center gap-3 py-16 text-center"
         role="alert"
       >
-        <p className="text-lg font-medium">アクセスが集中しています</p>
+        <p className="text-lg font-medium">
+          GitHub API のリクエスト制限に達しました
+        </p>
         <p className="text-sm text-muted-foreground">
-          {retrySeconds && retrySeconds > 0
-            ? `約${retrySeconds}秒後に再度お試しください`
-            : "少し時間をおいて再度お試しください"}
+          {resetTime
+            ? `${resetTime} 頃にリセットされます。しばらくお待ちください。`
+            : retrySeconds && retrySeconds > 0
+              ? `約${retrySeconds}秒後に再度お試しください。`
+              : "しばらく時間をおいて再度お試しください。"}
         </p>
       </div>
     );

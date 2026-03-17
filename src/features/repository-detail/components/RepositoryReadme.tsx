@@ -2,17 +2,13 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
-import { getReadme } from "@/shared/github/client";
 
 type RepositoryReadmeProps = {
-  owner: string;
-  repo: string;
+  content: string | null;
 };
 
-export async function RepositoryReadme({ owner, repo }: RepositoryReadmeProps) {
-  const readme = await getReadme(owner, repo);
-
-  if (!readme) {
+export function RepositoryReadme({ content }: RepositoryReadmeProps) {
+  if (!content) {
     return (
       <div className="rounded-lg border border-border p-6 text-center">
         <p className="text-sm text-muted-foreground">
@@ -21,8 +17,6 @@ export async function RepositoryReadme({ owner, repo }: RepositoryReadmeProps) {
       </div>
     );
   }
-
-  const content = Buffer.from(readme.content, "base64").toString("utf-8");
 
   return (
     <div className="rounded-lg border border-border p-6">

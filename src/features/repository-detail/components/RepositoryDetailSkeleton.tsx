@@ -11,6 +11,9 @@ export function RepositoryDetailSkeleton() {
         </div>
       </div>
 
+      {/* Favorite button skeleton */}
+      <div className="h-9 w-32 animate-pulse rounded-md bg-muted" />
+
       {/* Stats skeleton */}
       <div className="flex flex-wrap gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
@@ -33,6 +36,27 @@ export function RepositoryDetailSkeleton() {
       <div className="flex gap-3">
         <div className="h-9 w-32 animate-pulse rounded-lg bg-muted" />
         <div className="h-9 w-28 animate-pulse rounded-lg bg-muted" />
+      </div>
+
+      <hr className="border-foreground/10" />
+
+      {/* README skeleton */}
+      <div className="rounded-lg border border-border p-6">
+        <div className="mb-4 h-6 w-20 animate-pulse rounded bg-muted" />
+        <div className="space-y-3">
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-5/6 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-4/5 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-5/6 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+        </div>
       </div>
     </div>
   );
