@@ -9,16 +9,12 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { buildSearchUrl } from "../lib/normalize-search-params";
+import {
+  SORT_OPTIONS,
+  sortOptionToSelectValue,
+  selectValueToSortOption,
+} from "../lib/sort-mapping";
 import type { SortOption } from "../lib/parse-search-params";
-
-/** Sentinel for "best match" (default) since base-ui Select does not accept empty string as value */
-const BEST_MATCH = "best_match";
-
-const SORT_OPTIONS: { value: string; label: string; sortOption: SortOption }[] = [
-  { value: BEST_MATCH, label: "関連度順", sortOption: "" },
-  { value: "stars", label: "Star数順", sortOption: "stars" },
-  { value: "updated", label: "更新日順", sortOption: "updated" },
-];
 
 type SortSelectProps = {
   query: string;
@@ -28,14 +24,14 @@ type SortSelectProps = {
 
 export function SortSelect({ query, perPage, sort }: SortSelectProps) {
   const router = useRouter();
-  const selectValue = sort || BEST_MATCH;
+  const selectValue = sortOptionToSelectValue(sort);
 
   function handleChange(value: string | null) {
     if (value === null) return;
-    const option = SORT_OPTIONS.find((o) => o.value === value);
-    if (!option) return;
+    const sortOption = selectValueToSortOption(value);
+    if (sortOption === null) return;
     router.push(
-      buildSearchUrl({ q: query, page: 1, perPage, sort: option.sortOption }),
+      buildSearchUrl({ q: query, page: 1, perPage, sort: sortOption }),
     );
   }
 
