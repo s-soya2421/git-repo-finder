@@ -16,3 +16,10 @@ export type RepositoryDetailViewModel = {
   homepage: string | null;
   htmlUrl: string;
 };
+
+/** ViewModel for latest release info */
+export type LatestReleaseViewModel = {
+  tagName: string;
+  publishedAt: string;
+  htmlUrl: string;
+};

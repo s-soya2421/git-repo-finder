@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getRepository, getReadme, GitHubApiError } from "@/shared/github/client";
+import { getRepository, getReadme, getLatestRelease, GitHubApiError } from "@/shared/github/client";
 import { mapRepositoryResponse } from "@/features/repository-detail/lib/map-repository-response";
 import { RepositoryDetail } from "@/features/repository-detail/components/RepositoryDetail";
 import { ScrollToTop } from "@/shared/ui/scroll-to-top";
@@ -52,19 +52,28 @@ export default async function RepositoryDetailPage({ params }: PageProps) {
     throw error;
   }
 
-  const [repository, readme] = await Promise.all([
+  const [repository, readme, release] = await Promise.all([
     Promise.resolve(mapRepositoryResponse(response)),
     getReadme(owner, repo),
+    getLatestRelease(owner, repo),
   ]);
 
   const readmeContent = readme
     ? Buffer.from(readme.content, "base64").toString("utf-8")
     : null;
 
+  const latestRelease = release
+    ? {
+        tagName: release.tag_name,
+        publishedAt: release.published_at,
+        htmlUrl: release.html_url,
+      }
+    : null;
+
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-8">
       <ScrollToTop />
-      <RepositoryDetail repository={repository} readmeContent={readmeContent} />
+      <RepositoryDetail repository={repository} readmeContent={readmeContent} latestRelease={latestRelease} />
     </div>
   );
 }

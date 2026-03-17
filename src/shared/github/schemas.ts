@@ -43,3 +43,10 @@ export type GitHubReadmeResponse = {
   name: string;
   path: string;
 };
+
+/** GitHub REST API: Latest release response */
+export type GitHubReleaseResponse = {
+  tag_name: string;
+  published_at: string;
+  html_url: string;
+};
