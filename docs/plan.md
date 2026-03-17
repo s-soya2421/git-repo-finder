@@ -14,7 +14,7 @@
 - [x] ViewModel 型定義・mapping 関数（検索・詳細）
 - [x] 環境変数設定 (GitHub Token)
 - [x] searchParams の parse / normalize / buildSearchUrl
-- [x] Middleware 実装（URL パラメータ正規化・リダイレクト）
+- [x] `proxy.ts` 実装（URL パラメータ正規化・リダイレクト）
 
 ### 一覧画面
 
@@ -43,7 +43,7 @@
 ### 詳細画面
 
 - [x] 詳細ページ実装 (`/repositories/[owner]/[repo]`)
-- [x] Intercepting Routes 実装（一覧からオーバーレイ・直接アクセスで独立ページ）
+- [ ] Intercepting Routes 実装（一覧からオーバーレイ・直接アクセスで独立ページ）※未実装・将来検討
 - [x] GitHub API 連携 (`repos/{owner}/{repo}`)
 - [x] 表示項目
   - [x] リポジトリ名・オーナーアイコン（next/image）・説明文
@@ -71,10 +71,10 @@
 |---|---|---|---|
 | 1 | `feature/setup-shadcn` | **merged** | shadcn/ui, Vitest, format-number, format-relative-date |
 | 2 | `feature/github-api-client` | **merged** | API client, schemas, ViewModel, mapping |
-| 3 | `feature/search-params-middleware` | **merged** | parse, normalize, buildSearchUrl, middleware |
+| 3 | `feature/search-params-middleware` | **merged** | parse, normalize, buildSearchUrl, proxy |
 | 4 | `feature/search-list-page` | **merged** | 検索フォーム, 一覧画面, Suspense, 空状態/エラー |
 | 5 | `feature/pagination` | **merged** | ページネーション計算, ナビUI, 表示件数セレクト |
-| 6 | `feature/repository-detail` | **done** | 詳細画面, Intercepting Routes, 404 |
+| 6 | `feature/repository-detail` | **done** | 詳細画面, 通常ページ遷移, 404 |
 
 ---
 
@@ -119,7 +119,6 @@
 
 ### 一覧画面
 
-- sort 切替
 - qualifier 入力支援
 - GitHub で開くボタン強化
 - 条件サジェスト

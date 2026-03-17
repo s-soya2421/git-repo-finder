@@ -60,6 +60,7 @@
 | `RepositoryDetail` | Server | 各セクションの合成 | `src/features/repository-detail/components/RepositoryDetail.tsx` |
 | `RepositoryHeader` | Server | アイコン・名前・説明文 | `src/features/repository-detail/components/RepositoryHeader.tsx` |
 | `RepositoryStats` | Server | Star/Watcher/Fork/Issue | `src/features/repository-detail/components/RepositoryStats.tsx` |
+| `RepositoryActivity` | Server | 最新リリース情報の表示 | `src/features/repository-detail/components/RepositoryActivity.tsx` |
 | `RepositoryMeta` | Server | 言語/License/Topics/更新日/Homepage/Security Signals | `src/features/repository-detail/components/RepositoryMeta.tsx` |
 | `RepositoryReadme` | Server | README Markdown レンダリング | `src/features/repository-detail/components/RepositoryReadme.tsx` |
 | `ExternalLinks` | Server | GitHub ボタン + 戻るボタン wrapper | `src/features/repository-detail/components/ExternalLinks.tsx` |
@@ -78,6 +79,7 @@ page.tsx [Server]
     ├── RepositoryHeader [Server]
     ├── FavoriteButton [Client]
     ├── RepositoryStats [Server]
+    ├── RepositoryActivity [Server]
     ├── RepositoryMeta [Server]
     ├── ExternalLinks [Server]
     │   └── BackToListButton [Client]
@@ -95,7 +97,7 @@ URL params: { owner, repo }
   → mapRepositoryResponse() → RepositoryDetailViewModel
   → securitySignals を組み立て（取得失敗は unknown）
   → Base64 デコード（README）
-  → <RepositoryDetail repository={vm} readmeContent={string|null} securitySignals={...} />
+  → <RepositoryDetail repository={vm} readmeContent={string|null} latestRelease={...} securitySignals={...} />
   → 副作用: RecentlyViewedRecorder が LocalStorage に記録
   → 副作用: FavoriteButton が LocalStorage を購読
 ```
@@ -122,7 +124,7 @@ URL params: { owner, repo }
 | Fork | `forks_count` | `forks` | GitFork アイコン + 数値 |
 | Open Issues | `open_issues_count` | `openIssues` | CircleDot アイコン + 数値 |
 
-> **重要**: `watchers` は `subscribers_count` を使用。GitHub の `watchers_count` は非推奨。
+> **重要**: `watchers` は `subscribers_count` を使用。`watchers` / `watchers_count` は `stargazers_count` と同義（Star 数）であり、Watcher 数ではない。
 
 ### メタ情報（Meta）
 
