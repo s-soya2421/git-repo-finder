@@ -271,7 +271,7 @@ stale 表示や複雑な再検証戦略は採用しない。
 
 - クライアントから GitHub API を直接叩かない
 - Server Component もしくはサーバー側コード経由で取得する
-- Search API 用レート制限は通常枠と別管理であるため、残量をログに出す
+- Search API 用レート制限は通常枠と別管理（本アプリで使う `GET /search/repositories`: 未認証 10 req/min、認証あり 30 req/min）であるため、残量をログに出す
 
 ### エラー耐性
 
