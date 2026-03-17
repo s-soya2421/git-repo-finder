@@ -59,7 +59,10 @@ export function classifyGitHubError(
 // Fetch helper
 // ---------------------------------------------------------------------------
 
-async function githubFetch<T>(path: string): Promise<T> {
+async function githubFetch<T>(
+  path: string,
+  options?: { revalidate?: number },
+): Promise<T> {
   const token = process.env.GITHUB_TOKEN;
 
   const headers: Record<string, string> = {
@@ -75,7 +78,7 @@ async function githubFetch<T>(path: string): Promise<T> {
   try {
     response = await fetch(`${GITHUB_API_BASE_URL}${path}`, {
       headers,
-      next: { revalidate: 0 },
+      next: { revalidate: options?.revalidate ?? 0 },
     });
   } catch {
     const durationMs = Math.round(performance.now() - startTime);
@@ -155,6 +158,7 @@ export const searchRepositories = cache(
 export const getRepository = cache(async (owner: string, repo: string) => {
   return githubFetch<GitHubRepositoryResponse>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+    { revalidate: 60 },
   );
 });
 
@@ -163,6 +167,7 @@ export const getReadme = cache(
     try {
       return await githubFetch<GitHubReadmeResponse>(
         `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`,
+        { revalidate: 60 },
       );
     } catch (error) {
       if (error instanceof GitHubApiError && error.type === "not_found") {
