@@ -6,13 +6,16 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { buildSearchUrl } from "../lib/normalize-search-params";
+import type { SortOption } from "../lib/parse-search-params";
 
 type SearchFormProps = {
   defaultValue?: string;
   perPage?: number;
+  sort?: SortOption;
+  language?: string;
 };
 
-export function SearchForm({ defaultValue = "", perPage = 30 }: SearchFormProps) {
+export function SearchForm({ defaultValue = "", perPage = 30, sort = "", language = "" }: SearchFormProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultValue);
 
@@ -20,7 +23,7 @@ export function SearchForm({ defaultValue = "", perPage = 30 }: SearchFormProps)
     e.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
-    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage }));
+    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage, sort, language }));
   }
 
   function handleClear() {

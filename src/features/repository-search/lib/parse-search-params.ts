@@ -1,10 +1,15 @@
 const ALLOWED_PER_PAGE = [10, 30, 50] as const;
 const DEFAULT_PER_PAGE = 30;
 
+const ALLOWED_SORT = ["", "stars", "updated"] as const;
+export type SortOption = (typeof ALLOWED_SORT)[number];
+
 export type ParsedSearchParams = {
   q: string;
   page: number;
   perPage: number;
+  sort: SortOption;
+  language: string;
 };
 
 /**
@@ -29,5 +34,13 @@ export function parseSearchParams(
     ? parsedPerPage
     : DEFAULT_PER_PAGE;
 
-  return { q, page, perPage };
+  const rawSort = typeof params.sort === "string" ? params.sort : "";
+  const sort = (ALLOWED_SORT as readonly string[]).includes(rawSort)
+    ? (rawSort as SortOption)
+    : "";
+
+  const rawLanguage = typeof params.language === "string" ? params.language : "";
+  const language = rawLanguage.trim();
+
+  return { q, page, perPage, sort, language };
 }

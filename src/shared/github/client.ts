@@ -7,6 +7,7 @@ import {
 } from "./constants";
 import type {
   GitHubReadmeResponse,
+  GitHubReleaseResponse,
   GitHubRepositoryResponse,
   GitHubSearchResponse,
 } from "./schemas";
@@ -143,12 +144,24 @@ async function githubFetch<T>(
 // ---------------------------------------------------------------------------
 
 export const searchRepositories = cache(
-  async (query: string, page: number, perPage: number) => {
+  async (
+    query: string,
+    page: number,
+    perPage: number,
+    sort?: string,
+    order?: string,
+  ) => {
     const params = new URLSearchParams({
       q: query,
       page: String(page),
       per_page: String(perPage),
     });
+    if (sort) {
+      params.set("sort", sort);
+    }
+    if (order) {
+      params.set("order", order);
+    }
     return githubFetch<GitHubSearchResponse>(
       `/search/repositories?${params.toString()}`,
     );
@@ -167,6 +180,22 @@ export const getReadme = cache(
     try {
       return await githubFetch<GitHubReadmeResponse>(
         `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`,
+        { revalidate: 60 },
+      );
+    } catch (error) {
+      if (error instanceof GitHubApiError && error.type === "not_found") {
+        return null;
+      }
+      throw error;
+    }
+  },
+);
+
+export const getLatestRelease = cache(
+  async (owner: string, repo: string): Promise<GitHubReleaseResponse | null> => {
+    try {
+      return await githubFetch<GitHubReleaseResponse>(
+        `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases/latest`,
         { revalidate: 60 },
       );
     } catch (error) {
