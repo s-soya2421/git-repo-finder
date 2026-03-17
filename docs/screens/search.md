@@ -17,10 +17,11 @@
 | `q` | string | なし | trim後1文字以上 | 検索未実行（初期状態） |
 | `page` | number | `1` | 1以上の整数 | 1 |
 | `perPage` | number | `30` | 10, 30, 50 | 30 |
+| `sort` | string | 関連度順 | `stars`, `updated` | 関連度順 |
 
 - 例: `/?q=nextjs&page=2&perPage=50`
-- `page=1`, `perPage=30` は URL から省略される
-- 不正値はサーバーサイドで `normalizeSearchParams()` により正規化
+- `page=1`, `perPage=30`, デフォルト `sort`（関連度順）は URL から省略される
+- 不正値は `src/proxy.ts` で `normalizeSearchParams()` により正規化し、必要に応じて 308 リダイレクト
 
 ---
 
@@ -29,7 +30,7 @@
 | 状態 | 条件 | 表示内容 | 備考 |
 |---|---|---|---|
 | 初期（検索前） | `q` なし | EmptyState(initial) + RecentlyViewedList | 別途 [top-initial.md](top-initial.md) 参照 |
-| ローディング | `q` あり & 取得中 | SearchForm + RepositoryListSkeleton（5件分） | Suspense fallback。key=`${q}-${page}-${perPage}` |
+| ローディング | `q` あり & 取得中 | SearchForm + RepositoryListSkeleton（5件分） | Suspense fallback。key=`${q}-${page}-${perPage}-${sort}` |
 | 結果あり | `q` あり & count > 0 | SearchResultSummary + 一覧 + PaginationNav | aria-live="polite" で結果通知 |
 | 0件 | `q` あり & count = 0 | EmptyState(no-results) | クエリのエコー + 検索見直し案内 |
 | レート制限 | 403/429 rate limit | 専用メッセージ + リセット時刻 | role="alert"。primary/secondary 共通UI |
@@ -46,8 +47,9 @@
 | Enter / 検索ボタン | 検索実行。page=1 にリセット | `/?q={入力値}` |
 | 空文字で検索 | 何もしない（送信をブロック） | 変化なし |
 | クリアボタン（×） | 入力クリア + トップへ遷移 | `/` |
-| 表示件数変更 | page=1 にリセットして再検索 | `/?q={q}&perPage={N}` |
-| ページ遷移（前へ/次へ/番号） | 該当ページの結果を取得 | `/?q={q}&page={N}` |
+| 表示件数変更 | page=1 にリセットして再検索 | `/?q={q}&perPage={N}&sort={sort}` |
+| 並び順変更 | page=1 にリセットして再検索 | `/?q={q}&sort=stars` または `/?q={q}&sort=updated` |
+| ページ遷移（前へ/次へ/番号） | 該当ページの結果を取得 | `/?q={q}&page={N}&sort={sort}` |
 | タイトル（ヘッダー）クリック | トップ初期状態へ遷移 | `/` |
 | ブラウザバック | 前の URL 状態を復元 | 前の URL |
 | リポジトリカード内リンク | 詳細画面へ遷移 | `/repositories/{owner}/{repo}` |
@@ -67,6 +69,7 @@
 | `RepositoryList` | Server | API取得・エラー分岐・一覧描画 | `src/features/repository-search/components/RepositoryList.tsx` |
 | `RepositoryListItem` | Client | カード描画・説明文展開 | `src/features/repository-search/components/RepositoryListItem.tsx` |
 | `SearchResultSummary` | Server | 見出し・件数・incomplete警告 | `src/features/repository-search/components/SearchResultSummary.tsx` |
+| `SortSelect` | Client | 並び順セレクト・router.push | `src/features/repository-search/components/SortSelect.tsx` |
 | `PaginationNav` | Server | ページネーションリンク生成 | `src/features/repository-search/components/PaginationNav.tsx` |
 | `PerPageSelect` | Client | 表示件数セレクト・router.push | `src/features/repository-search/components/PerPageSelect.tsx` |
 | `EmptyState` | Server | 初期/0件の案内表示 | `src/features/repository-search/components/EmptyState.tsx` |
@@ -79,11 +82,11 @@
 
 ```
 URL searchParams
-  → page.tsx: normalizeSearchParams() → 不正値を正規化
-  → parseSearchParams() → { q, page, perPage }
+  → proxy.ts: normalizeSearchParams() → 不正値を正規化し必要ならリダイレクト
+  → page.tsx: parseSearchParams() → { q, page, perPage, sort }
   → q がなければ EmptyState(initial) + RecentlyViewedList
   → q があれば Suspense 境界内で RepositoryList を描画
-    → searchRepositories(q, page, perPage) [Server]
+    → searchRepositories(q, page, perPage, sort, order) [Server]
     → mapSearchResponse() → RepositoryListItemViewModel[]
     → 各 RepositoryListItem に props として渡す
 ```
@@ -103,7 +106,7 @@ URL searchParams
 | Archived / Disabled | 第二 | true のとき警告バッジ表示 |
 | Topics | 第二 | 最大3件 + `+N` バッジ |
 | License | 第二 | SPDX ID。null なら非表示 |
-| オーナーアイコン | 第三 | 32×32 rounded |
+| オーナーアイコン | 第三 | 24×24 rounded |
 | オーナー名 | 第三 | アイコン横 |
 | GitHub で開く | 第三 | 外部リンク（新しいタブ） |
 
@@ -134,7 +137,7 @@ URL searchParams
 - `incomplete_results=true` 時は amber 色で補足メッセージを表示
 - `pushed_at` が 180 日以上前の場合は「要注意」表示
 - API 上限超過ページへのアクセスは PaginationNav が maxPage でガード
-- Suspense key が `${q}-${page}-${perPage}` なので、パラメータ変更で必ず再取得
+- Suspense key が `${q}-${page}-${perPage}-${sort}` なので、パラメータ変更で必ず再取得
 - レート制限時は `x-ratelimit-reset` からリセット時刻を HH:mm で表示
 - `retry-after` ヘッダーがあれば秒数も併記
 
@@ -149,4 +152,5 @@ URL searchParams
 - レート制限・エラー: `role="alert"`
 - ページネーション: `nav[aria-label="ページネーション"]`, `aria-current="page"`
 - 表示件数: `aria-label="表示件数"`
+- 並び順: `aria-label="並び順"`
 - Star アイコン: `sr-only` ラベル

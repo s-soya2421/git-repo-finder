@@ -46,7 +46,7 @@ npm run dev
 GITHUB_TOKEN=your_github_token
 ```
 
-> GitHub Token は未設定でも動作しますが、レート制限が 60 req/h になります。Token を設定すると 5,000 req/h になります。
+> GitHub Token は未設定でも動作しますが、REST API（core）は 60 req/h、本アプリで使う `GET /search/repositories` は 10 req/min の制限があります。Token を設定すると core は 5,000 req/h、`GET /search/repositories` は 30 req/min になります。
 
 ## 工夫した点・拘ったポイント
 
