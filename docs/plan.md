@@ -61,7 +61,7 @@
 - [x] ViewModel mapping テスト（mapSearchResponse, mapRepositoryResponse）
 - [x] searchParams parse / normalize / buildSearchUrl テスト
 - [x] ページネーション計算テスト
-- [ ] 基本 E2E（主要導線）
+- [x] 基本 E2E（主要導線）
 
 ---
 
@@ -95,21 +95,21 @@
 
 ### お気に入り
 
-- [ ] LocalStorage への保存・削除・全削除
-- [ ] 詳細画面にお気に入りトグルボタン
-- [ ] `/favorites` ページ実装
+- [x] LocalStorage への保存・削除・全削除
+- [x] 詳細画面にお気に入りトグルボタン
+- [x] `/favorites` ページ実装
 
 ### 最近見たリポジトリ
 
-- [ ] 詳細画面を開いた際に LocalStorage へ自動記録（上限 20件）
-- [ ] トップページ（検索前）に最近見た一覧を表示
+- [x] 詳細画面を開いた際に LocalStorage へ自動記録（上限 20件）
+- [x] トップページ（検索前）に最近見た一覧を表示
 
 ### README 表示
 
-- [ ] `GET /repos/{owner}/{repo}/readme` で取得（Base64 デコード）
-- [ ] Markdown レンダリングライブラリ導入（react-markdown 等）
-- [ ] 詳細画面に README セクション追加
-- [ ] README なし時の空状態対応
+- [x] `GET /repos/{owner}/{repo}/readme` で取得（Base64 デコード）
+- [x] Markdown レンダリングライブラリ導入（react-markdown 等）
+- [x] 詳細画面に README セクション追加
+- [x] README なし時の空状態対応
 
 ---
 
