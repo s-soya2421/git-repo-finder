@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "full_name": "facebook/react",
+  "name": "react",
+  "owner": { "login": "facebook", "avatar_url": "https://avatars.githubusercontent.com/u/69631?v=4" },
+  "description": "The library for web and native user interfaces.",
+  "html_url": "https://github.com/facebook/react",
+  "homepage": "https://react.dev",
+  "language": "JavaScript",
+  "license": { "spdx_id": "MIT", "name": "MIT License" },
+  "topics": ["javascript", "library", "react"],
+  "stargazers_count": 220000,
+  "watchers_count": 220000,
+  "forks_count": 45000,
+  "open_issues_count": 1500,
+  "subscribers_count": 6500,
+  "updated_at": "2025-01-15T10:00:00Z"
+}

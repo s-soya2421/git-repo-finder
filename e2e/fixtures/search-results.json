@@ -1,0 +1,57 @@
+{
+  "total_count": 45,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 1,
+      "full_name": "facebook/react",
+      "name": "react",
+      "owner": { "login": "facebook", "avatar_url": "https://avatars.githubusercontent.com/u/69631?v=4" },
+      "description": "The library for web and native user interfaces.",
+      "html_url": "https://github.com/facebook/react",
+      "homepage": "https://react.dev",
+      "language": "JavaScript",
+      "license": { "spdx_id": "MIT", "name": "MIT License" },
+      "topics": ["javascript", "library", "react"],
+      "stargazers_count": 220000,
+      "watchers_count": 220000,
+      "forks_count": 45000,
+      "open_issues_count": 1500,
+      "updated_at": "2025-01-15T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "full_name": "vuejs/vue",
+      "name": "vue",
+      "owner": { "login": "vuejs", "avatar_url": "https://avatars.githubusercontent.com/u/6128107?v=4" },
+      "description": "This is the repo for Vue 2. Vue is a progressive JavaScript framework for building user interfaces.",
+      "html_url": "https://github.com/vuejs/vue",
+      "homepage": "http://v2.vuejs.org",
+      "language": "TypeScript",
+      "license": { "spdx_id": "MIT", "name": "MIT License" },
+      "topics": ["vue", "framework"],
+      "stargazers_count": 207000,
+      "watchers_count": 207000,
+      "forks_count": 33000,
+      "open_issues_count": 600,
+      "updated_at": "2025-01-10T08:00:00Z"
+    },
+    {
+      "id": 3,
+      "full_name": "angular/angular",
+      "name": "angular",
+      "owner": { "login": "angular", "avatar_url": "https://avatars.githubusercontent.com/u/139426?v=4" },
+      "description": "Deliver web apps with confidence",
+      "html_url": "https://github.com/angular/angular",
+      "homepage": "https://angular.dev",
+      "language": "TypeScript",
+      "license": { "spdx_id": "MIT", "name": "MIT License" },
+      "topics": ["angular", "framework", "typescript"],
+      "stargazers_count": 96000,
+      "watchers_count": 96000,
+      "forks_count": 25000,
+      "open_issues_count": 1800,
+      "updated_at": "2025-01-14T12:00:00Z"
+    }
+  ]
+}
