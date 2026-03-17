@@ -19,6 +19,9 @@ const mockResponse: GitHubRepositoryResponse = {
   open_issues_count: 7,
   subscribers_count: 89,
   updated_at: "2026-03-15T10:00:00Z",
+  pushed_at: "2026-03-10T10:00:00Z",
+  archived: false,
+  disabled: false,
 };
 
 describe("mapRepositoryResponse", () => {
@@ -38,6 +41,9 @@ describe("mapRepositoryResponse", () => {
     expect(result.forks).toBe(56);
     expect(result.openIssues).toBe(7);
     expect(result.updatedAt).toBe("2026-03-15T10:00:00Z");
+    expect(result.pushedAt).toBe("2026-03-10T10:00:00Z");
+    expect(result.archived).toBe(false);
+    expect(result.disabled).toBe(false);
     expect(result.homepage).toBe("https://example.com");
     expect(result.htmlUrl).toBe("https://github.com/owner/repo");
   });

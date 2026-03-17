@@ -22,6 +22,9 @@ const mockResponse: GitHubSearchResponse = {
       forks_count: 56,
       open_issues_count: 7,
       updated_at: "2026-03-15T10:00:00Z",
+      pushed_at: "2026-03-10T10:00:00Z",
+      archived: false,
+      disabled: false,
     },
   ],
 };
@@ -48,6 +51,9 @@ describe("mapSearchResponse", () => {
     expect(item.topics).toEqual(["nextjs", "react", "typescript"]);
     expect(item.stars).toBe(1234);
     expect(item.updatedAt).toBe("2026-03-15T10:00:00Z");
+    expect(item.pushedAt).toBe("2026-03-10T10:00:00Z");
+    expect(item.archived).toBe(false);
+    expect(item.disabled).toBe(false);
     expect(item.htmlUrl).toBe("https://github.com/owner/repo");
   });
 

@@ -1,13 +1,38 @@
 import Link from "next/link";
 import { Badge } from "@/shared/ui/badge";
 import { formatRelativeDate } from "@/shared/lib/format-relative-date";
-import type { RepositoryDetailViewModel } from "../types";
+import type {
+  CiStatus,
+  PresenceStatus,
+  RepositoryDetailViewModel,
+  SecuritySignalsViewModel,
+} from "../types";
 
 type RepositoryMetaProps = {
   repository: RepositoryDetailViewModel;
+  securitySignals: SecuritySignalsViewModel;
 };
 
-export function RepositoryMeta({ repository }: RepositoryMetaProps) {
+function presenceLabel(status: PresenceStatus): string {
+  if (status === "present") return "あり";
+  if (status === "absent") return "なし";
+  return "不明";
+}
+
+function ciLabel(status: CiStatus): string {
+  if (status === "success") return "成功";
+  if (status === "failed") return "失敗";
+  if (status === "none") return "ワークフローなし";
+  return "不明";
+}
+
+function codeFreshnessLabel(status: SecuritySignalsViewModel["codeFreshness"]): string {
+  if (status === "fresh") return "更新あり";
+  if (status === "stale") return "要注意";
+  return "不明";
+}
+
+export function RepositoryMeta({ repository, securitySignals }: RepositoryMetaProps) {
   return (
     <dl className="flex flex-col gap-3 text-sm">
       {repository.language && (
@@ -50,6 +75,29 @@ export function RepositoryMeta({ repository }: RepositoryMetaProps) {
         <dd>{formatRelativeDate(repository.updatedAt)}</dd>
       </div>
 
+      <div className="flex items-baseline gap-2">
+        <dt className="shrink-0 text-muted-foreground">コード最終更新</dt>
+        <dd className="flex items-center gap-2">
+          <span>{formatRelativeDate(repository.pushedAt)}</span>
+          <Badge
+            variant={securitySignals.codeFreshness === "stale" ? "destructive" : "secondary"}
+          >
+            {codeFreshnessLabel(securitySignals.codeFreshness)}
+          </Badge>
+        </dd>
+      </div>
+
+      <div className="flex items-baseline gap-2">
+        <dt className="shrink-0 text-muted-foreground">リポジトリ状態</dt>
+        <dd className="flex flex-wrap items-center gap-1.5">
+          {repository.archived && <Badge variant="destructive">Archived</Badge>}
+          {repository.disabled && <Badge variant="destructive">Disabled</Badge>}
+          {!repository.archived && !repository.disabled && (
+            <Badge variant="secondary">Active</Badge>
+          )}
+        </dd>
+      </div>
+
       {repository.homepage && (
         <div className="flex items-baseline gap-2">
           <dt className="shrink-0 text-muted-foreground">ホームページ</dt>
@@ -65,6 +113,44 @@ export function RepositoryMeta({ repository }: RepositoryMetaProps) {
           </dd>
         </div>
       )}
+
+      <div className="pt-2">
+        <h3 className="mb-2 text-sm font-medium">Security Signals</h3>
+        <dl className="flex flex-col gap-2">
+          <div className="flex items-baseline gap-2">
+            <dt className="shrink-0 text-muted-foreground">SECURITY.md</dt>
+            <dd>
+              <Badge variant={securitySignals.securityPolicy === "present" ? "secondary" : "outline"}>
+                {presenceLabel(securitySignals.securityPolicy)}
+              </Badge>
+            </dd>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <dt className="shrink-0 text-muted-foreground">Dependabot</dt>
+            <dd>
+              <Badge variant={securitySignals.dependabot === "present" ? "secondary" : "outline"}>
+                {presenceLabel(securitySignals.dependabot)}
+              </Badge>
+            </dd>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <dt className="shrink-0 text-muted-foreground">CI</dt>
+            <dd>
+              <Badge
+                variant={
+                  securitySignals.ciStatus === "success"
+                    ? "secondary"
+                    : securitySignals.ciStatus === "failed"
+                      ? "destructive"
+                      : "outline"
+                }
+              >
+                {ciLabel(securitySignals.ciStatus)}
+              </Badge>
+            </dd>
+          </div>
+        </dl>
+      </div>
     </dl>
   );
 }

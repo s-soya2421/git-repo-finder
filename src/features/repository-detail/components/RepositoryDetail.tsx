@@ -1,4 +1,8 @@
-import type { RepositoryDetailViewModel, LatestReleaseViewModel } from "../types";
+import type {
+  RepositoryDetailViewModel,
+  LatestReleaseViewModel,
+  SecuritySignalsViewModel,
+} from "../types";
 import { RepositoryHeader } from "./RepositoryHeader";
 import { RepositoryStats } from "./RepositoryStats";
 import { RepositoryMeta } from "./RepositoryMeta";
@@ -12,9 +16,15 @@ type RepositoryDetailProps = {
   repository: RepositoryDetailViewModel;
   readmeContent: string | null;
   latestRelease: LatestReleaseViewModel | null;
+  securitySignals: SecuritySignalsViewModel;
 };
 
-export function RepositoryDetail({ repository, readmeContent, latestRelease }: RepositoryDetailProps) {
+export function RepositoryDetail({
+  repository,
+  readmeContent,
+  latestRelease,
+  securitySignals,
+}: RepositoryDetailProps) {
   return (
     <div className="flex flex-col gap-6">
       <RecentlyViewedRecorder
@@ -41,7 +51,7 @@ export function RepositoryDetail({ repository, readmeContent, latestRelease }: R
       <RepositoryStats repository={repository} />
       <RepositoryActivity latestRelease={latestRelease} />
       <hr className="border-foreground/10" />
-      <RepositoryMeta repository={repository} />
+      <RepositoryMeta repository={repository} securitySignals={securitySignals} />
       <hr className="border-foreground/10" />
       <ExternalLinks repository={repository} />
       <hr className="border-foreground/10" />

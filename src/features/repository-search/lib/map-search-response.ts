@@ -18,6 +18,9 @@ function mapSearchItem(
     topics: item.topics,
     stars: item.stargazers_count,
     updatedAt: item.updated_at,
+    pushedAt: item.pushed_at,
+    archived: item.archived,
+    disabled: item.disabled,
     htmlUrl: item.html_url,
   };
 }

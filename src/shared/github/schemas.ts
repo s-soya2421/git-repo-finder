@@ -22,6 +22,9 @@ export type GitHubSearchItem = {
   open_issues_count: number;
   subscribers_count?: number;
   updated_at: string;
+  pushed_at: string;
+  archived: boolean;
+  disabled: boolean;
 };
 
 /** GitHub REST API: Search repositories response */
@@ -49,4 +52,13 @@ export type GitHubReleaseResponse = {
   tag_name: string;
   published_at: string;
   html_url: string;
+};
+
+/** GitHub REST API: Workflow runs response (partial) */
+export type GitHubWorkflowRunsResponse = {
+  total_count: number;
+  workflow_runs: Array<{
+    id: number;
+    conclusion: string | null;
+  }>;
 };

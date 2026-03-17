@@ -99,6 +99,8 @@ URL searchParams
 | Star 数 | 第二 | `formatNumber()` で整形（1.2k等） |
 | 主要言語 | 第二 | null なら非表示 |
 | 最終更新日 | 第二 | `formatRelativeDate()` で相対表示 |
+| コード最終更新日 | 第二 | `pushed_at` を `formatRelativeDate()` で表示。180日以上で「要注意」 |
+| Archived / Disabled | 第二 | true のとき警告バッジ表示 |
 | Topics | 第二 | 最大3件 + `+N` バッジ |
 | License | 第二 | SPDX ID。null なら非表示 |
 | オーナーアイコン | 第三 | 32×32 rounded |
@@ -130,6 +132,7 @@ URL searchParams
 
 - 空文字では検索しない（フォーム側でガード）
 - `incomplete_results=true` 時は amber 色で補足メッセージを表示
+- `pushed_at` が 180 日以上前の場合は「要注意」表示
 - API 上限超過ページへのアクセスは PaginationNav が maxPage でガード
 - Suspense key が `${q}-${page}-${perPage}` なので、パラメータ変更で必ず再取得
 - レート制限時は `x-ratelimit-reset` からリセット時刻を HH:mm で表示

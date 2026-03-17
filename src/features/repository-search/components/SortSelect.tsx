@@ -42,7 +42,9 @@ export function SortSelect({ query, perPage, sort }: SortSelectProps) {
   return (
     <Select value={selectValue} onValueChange={handleChange}>
       <SelectTrigger size="sm" aria-label="並び順">
-        <SelectValue />
+        <SelectValue>
+          {SORT_OPTIONS.find((o) => o.value === selectValue)?.label}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {SORT_OPTIONS.map((option) => (
