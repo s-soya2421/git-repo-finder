@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import { Button } from "@/shared/ui/button";
 import type { FavoriteItem } from "../types";
 import {
@@ -22,7 +22,19 @@ function getServerSnapshot() {
 }
 
 export function FavoriteList() {
-  const getSnapshot = useCallback(() => getFavorites(), []);
+  const cachedRef = useRef<{ json: string; value: FavoriteItem[] }>({
+    json: "[]",
+    value: emptyArray,
+  });
+
+  function getSnapshot() {
+    const items = getFavorites();
+    const json = JSON.stringify(items);
+    if (json !== cachedRef.current.json) {
+      cachedRef.current = { json, value: items };
+    }
+    return cachedRef.current.value;
+  }
 
   const items = useSyncExternalStore(
     subscribeToStorage,

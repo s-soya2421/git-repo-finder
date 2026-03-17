@@ -1,0 +1,23 @@
+{
+  "total_count": 45,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 4,
+      "full_name": "sveltejs/svelte",
+      "name": "svelte",
+      "owner": { "login": "sveltejs", "avatar_url": "https://avatars.githubusercontent.com/u/23617963?v=4" },
+      "description": "Cybernetically enhanced web apps",
+      "html_url": "https://github.com/sveltejs/svelte",
+      "homepage": "https://svelte.dev",
+      "language": "JavaScript",
+      "license": { "spdx_id": "MIT", "name": "MIT License" },
+      "topics": ["svelte", "compiler"],
+      "stargazers_count": 78000,
+      "watchers_count": 78000,
+      "forks_count": 4000,
+      "open_issues_count": 800,
+      "updated_at": "2025-01-13T15:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "total_count": 100,
+  "incomplete_results": true,
+  "items": [
+    {
+      "id": 10,
+      "full_name": "test-org/test-repo",
+      "name": "test-repo",
+      "owner": { "login": "test-org", "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4" },
+      "description": "A test repository for incomplete results",
+      "html_url": "https://github.com/test-org/test-repo",
+      "homepage": null,
+      "language": "Python",
+      "license": null,
+      "topics": [],
+      "stargazers_count": 500,
+      "watchers_count": 500,
+      "forks_count": 50,
+      "open_issues_count": 10,
+      "updated_at": "2025-01-12T09:00:00Z"
+    }
+  ]
+}
