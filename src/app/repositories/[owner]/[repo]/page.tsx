@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getRepository, GitHubApiError } from "@/shared/github/client";
+import { getRepository, getReadme, GitHubApiError } from "@/shared/github/client";
 import { mapRepositoryResponse } from "@/features/repository-detail/lib/map-repository-response";
 import { RepositoryDetail } from "@/features/repository-detail/components/RepositoryDetail";
+import { ScrollToTop } from "@/shared/ui/scroll-to-top";
 
 type PageProps = {
   params: Promise<{ owner: string; repo: string }>;
@@ -25,17 +26,45 @@ export default async function RepositoryDetailPage({ params }: PageProps) {
   try {
     response = await getRepository(owner, repo);
   } catch (error) {
-    if (error instanceof GitHubApiError && error.type === "not_found") {
-      notFound();
+    if (error instanceof GitHubApiError) {
+      if (error.type === "not_found") {
+        notFound();
+      }
+      if (error.type === "rate_limit_primary" || error.type === "rate_limit_secondary") {
+        const resetTime = error.resetAt
+          ? error.resetAt.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+          : null;
+        return (
+          <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-4 px-4">
+            <ScrollToTop />
+            <h2 className="text-lg font-semibold">
+              GitHub API のリクエスト制限に達しました
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {resetTime
+                ? `${resetTime} 頃にリセットされます。しばらくお待ちください。`
+                : "しばらく時間をおいて再度お試しください。"}
+            </p>
+          </div>
+        );
+      }
     }
     throw error;
   }
 
-  const repository = mapRepositoryResponse(response);
+  const [repository, readme] = await Promise.all([
+    Promise.resolve(mapRepositoryResponse(response)),
+    getReadme(owner, repo),
+  ]);
+
+  const readmeContent = readme
+    ? Buffer.from(readme.content, "base64").toString("utf-8")
+    : null;
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-8">
-      <RepositoryDetail repository={repository} />
+      <ScrollToTop />
+      <RepositoryDetail repository={repository} readmeContent={readmeContent} />
     </div>
   );
 }

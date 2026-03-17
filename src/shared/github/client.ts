@@ -30,6 +30,7 @@ export class GitHubApiError extends Error {
     public readonly type: GitHubErrorType,
     public readonly status: number | null,
     public readonly retryAfter: string | null = null,
+    public readonly resetAt: Date | null = null,
   ) {
     super(message);
     this.name = "GitHubApiError";
@@ -109,11 +110,14 @@ async function githubFetch<T>(path: string): Promise<T> {
       retryAfter,
       errorType,
     });
+    const resetEpoch = response.headers.get("x-ratelimit-reset");
+    const resetAt = resetEpoch ? new Date(Number(resetEpoch) * 1000) : null;
     throw new GitHubApiError(
       `GitHub API error: ${response.status}`,
       errorType,
       response.status,
       retryAfter,
+      resetAt,
     );
   }
 

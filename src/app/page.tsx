@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { parseSearchParams } from "@/features/repository-search/lib/parse-search-params";
 import { SearchForm } from "@/features/repository-search/components/SearchForm";
 import { EmptyState } from "@/features/repository-search/components/EmptyState";
@@ -34,11 +33,6 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-8">
-      <header className="mb-8">
-        <Link href="/" className="text-2xl font-bold hover:opacity-80">
-          git-repo-finder
-        </Link>
-      </header>
       <main className="flex flex-col gap-8">
         <SearchForm defaultValue={q} perPage={perPage} />
         {q ? (
