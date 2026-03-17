@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/shared/ui/badge";
 import { formatRelativeDate } from "@/shared/lib/format-relative-date";
 import type { RepositoryDetailViewModel } from "../types";
@@ -30,9 +31,15 @@ export function RepositoryMeta({ repository }: RepositoryMetaProps) {
           <dt className="shrink-0 text-muted-foreground">トピック</dt>
           <dd className="flex flex-wrap gap-1.5">
             {repository.topics.map((topic) => (
-              <Badge key={topic} variant="secondary">
-                {topic}
-              </Badge>
+              <Link
+                key={topic}
+                href={`/?q=topic:${encodeURIComponent(topic)}`}
+                className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <Badge variant="secondary" className="hover:bg-secondary/80 cursor-pointer">
+                  {topic}
+                </Badge>
+              </Link>
             ))}
           </dd>
         </div>
