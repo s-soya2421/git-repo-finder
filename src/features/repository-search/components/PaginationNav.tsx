@@ -11,7 +11,6 @@ type PaginationNavProps = {
   perPage: number;
   totalCount: number;
   sort: SortOption;
-  language: string;
 };
 
 export function PaginationNav({
@@ -20,7 +19,6 @@ export function PaginationNav({
   perPage,
   totalCount,
   sort,
-  language,
 }: PaginationNavProps) {
   const pagination = calcPagination(totalCount, page, perPage);
 
@@ -39,7 +37,6 @@ export function PaginationNav({
                 page: pagination.currentPage - 1,
                 perPage,
                 sort,
-                language,
               })}
               className={cn(
                 "inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors",
@@ -70,7 +67,7 @@ export function PaginationNav({
               </span>
             ) : (
               <Link
-                href={buildSearchUrl({ q: query, page: p, perPage, sort, language })}
+                href={buildSearchUrl({ q: query, page: p, perPage, sort })}
                 className="inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors hover:bg-muted"
               >
                 {p}
@@ -87,7 +84,6 @@ export function PaginationNav({
                 page: pagination.currentPage + 1,
                 perPage,
                 sort,
-                language,
               })}
               className={cn(
                 "inline-flex size-8 items-center justify-center rounded-lg text-sm transition-colors",

@@ -12,10 +12,9 @@ type SearchFormProps = {
   defaultValue?: string;
   perPage?: number;
   sort?: SortOption;
-  language?: string;
 };
 
-export function SearchForm({ defaultValue = "", perPage = 30, sort = "", language = "" }: SearchFormProps) {
+export function SearchForm({ defaultValue = "", perPage = 30, sort = "" }: SearchFormProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultValue);
 
@@ -23,7 +22,7 @@ export function SearchForm({ defaultValue = "", perPage = 30, sort = "", languag
     e.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
-    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage, sort, language }));
+    router.push(buildSearchUrl({ q: trimmed, page: 1, perPage, sort }));
   }
 
   function handleClear() {

@@ -13,7 +13,6 @@ type RepositoryListProps = {
   page: number;
   perPage: number;
   sort: SortOption;
-  language: string;
 };
 
 type FetchResult =
@@ -53,12 +52,10 @@ export async function RepositoryList({
   page,
   perPage,
   sort,
-  language,
 }: RepositoryListProps) {
-  const apiQuery = language ? `${query} language:${language}` : query;
   const apiSort = sort || undefined;
   const apiOrder = sort === "stars" ? "desc" : sort === "updated" ? "desc" : undefined;
-  const result = await fetchSearchResults(apiQuery, page, perPage, apiSort, apiOrder);
+  const result = await fetchSearchResults(query, page, perPage, apiSort, apiOrder);
 
   if (result.status === "rate_limit") {
     const retrySeconds = result.retryAfter
@@ -120,7 +117,6 @@ export async function RepositoryList({
         page={page}
         perPage={perPage}
         sort={sort}
-        language={language}
         incompleteResults={result.data.incompleteResults}
       />
       <div className="flex flex-col gap-4">
@@ -134,7 +130,6 @@ export async function RepositoryList({
         perPage={perPage}
         totalCount={result.data.totalCount}
         sort={sort}
-        language={language}
       />
     </div>
   );

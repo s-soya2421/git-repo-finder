@@ -4,7 +4,7 @@ import { parseSearchParams } from "../parse-search-params";
 describe("parseSearchParams", () => {
   it("parses valid params", () => {
     const result = parseSearchParams({ q: "nextjs", page: "2", perPage: "50" });
-    expect(result).toEqual({ q: "nextjs", page: 2, perPage: 50, sort: "", language: "" });
+    expect(result).toEqual({ q: "nextjs", page: 2, perPage: 50, sort: "" });
   });
 
   it("trims q", () => {
@@ -63,15 +63,4 @@ describe("parseSearchParams", () => {
     expect(parseSearchParams({ sort: "invalid" }).sort).toBe("");
   });
 
-  it("defaults language to empty string when missing", () => {
-    expect(parseSearchParams({}).language).toBe("");
-  });
-
-  it("parses language value", () => {
-    expect(parseSearchParams({ language: "TypeScript" }).language).toBe("TypeScript");
-  });
-
-  it("trims language value", () => {
-    expect(parseSearchParams({ language: "  Go  " }).language).toBe("Go");
-  });
 });

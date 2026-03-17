@@ -1,7 +1,6 @@
 import { formatNumber } from "@/shared/lib/format-number";
 import { PerPageSelect } from "./PerPageSelect";
 import { SortSelect } from "./SortSelect";
-import { LanguageInput } from "./LanguageInput";
 import type { SortOption } from "../lib/parse-search-params";
 
 type SearchResultSummaryProps = {
@@ -10,7 +9,6 @@ type SearchResultSummaryProps = {
   page: number;
   perPage: number;
   sort: SortOption;
-  language: string;
   incompleteResults?: boolean;
 };
 
@@ -20,7 +18,6 @@ export function SearchResultSummary({
   page,
   perPage,
   sort,
-  language,
   incompleteResults = false,
 }: SearchResultSummaryProps) {
   const start = (page - 1) * perPage + 1;
@@ -33,9 +30,8 @@ export function SearchResultSummary({
           &ldquo;{query}&rdquo; の検索結果
         </h2>
         <div className="flex items-center gap-2">
-          <SortSelect query={query} perPage={perPage} sort={sort} language={language} />
-          <LanguageInput query={query} perPage={perPage} sort={sort} language={language} />
-          <PerPageSelect query={query} perPage={perPage} sort={sort} language={language} />
+          <SortSelect query={query} perPage={perPage} sort={sort} />
+          <PerPageSelect query={query} perPage={perPage} sort={sort} />
         </div>
       </div>
       <p className="text-sm text-muted-foreground">

@@ -29,18 +29,18 @@ export async function generateMetadata({
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { q, page, perPage, sort, language } = parseSearchParams(params);
+  const { q, page, perPage, sort } = parseSearchParams(params);
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-8">
       <main className="flex flex-col gap-8">
-        <SearchForm defaultValue={q} perPage={perPage} sort={sort} language={language} />
+        <SearchForm defaultValue={q} perPage={perPage} sort={sort} />
         {q ? (
           <Suspense
-            key={`${q}-${page}-${perPage}-${sort}-${language}`}
+            key={`${q}-${page}-${perPage}-${sort}`}
             fallback={<RepositoryListSkeleton />}
           >
-            <RepositoryList query={q} page={page} perPage={perPage} sort={sort} language={language} />
+            <RepositoryList query={q} page={page} perPage={perPage} sort={sort} />
           </Suspense>
         ) : (
           <>

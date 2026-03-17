@@ -24,10 +24,9 @@ type SortSelectProps = {
   query: string;
   perPage: number;
   sort: SortOption;
-  language: string;
 };
 
-export function SortSelect({ query, perPage, sort, language }: SortSelectProps) {
+export function SortSelect({ query, perPage, sort }: SortSelectProps) {
   const router = useRouter();
   const selectValue = sort || BEST_MATCH;
 
@@ -36,7 +35,7 @@ export function SortSelect({ query, perPage, sort, language }: SortSelectProps) 
     const option = SORT_OPTIONS.find((o) => o.value === value);
     if (!option) return;
     router.push(
-      buildSearchUrl({ q: query, page: 1, perPage, sort: option.sortOption, language }),
+      buildSearchUrl({ q: query, page: 1, perPage, sort: option.sortOption }),
     );
   }
 

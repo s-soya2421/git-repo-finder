@@ -17,15 +17,14 @@ type PerPageSelectProps = {
   query: string;
   perPage: number;
   sort: SortOption;
-  language: string;
 };
 
-export function PerPageSelect({ query, perPage, sort, language }: PerPageSelectProps) {
+export function PerPageSelect({ query, perPage, sort }: PerPageSelectProps) {
   const router = useRouter();
 
   function handleChange(value: number | null) {
     if (value === null) return;
-    router.push(buildSearchUrl({ q: query, page: 1, perPage: value, sort, language }));
+    router.push(buildSearchUrl({ q: query, page: 1, perPage: value, sort }));
   }
 
   return (

@@ -45,49 +45,44 @@ describe("normalizeSearchParams", () => {
     expect(normalizeSearchParams({ q: "test", sort: "stars" })).toBeNull();
   });
 
-  it("normalizes trimmed language", () => {
-    const result = normalizeSearchParams({ q: "test", language: "  Go  " });
-    expect(result).not.toBeNull();
-    expect(result!.language).toBe("Go");
-  });
 });
 
 describe("buildSearchUrl", () => {
   it("builds URL with all params", () => {
-    expect(buildSearchUrl({ q: "nextjs", page: 2, perPage: 50, sort: "", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "nextjs", page: 2, perPage: 50, sort: "" })).toBe(
       "/?q=nextjs&page=2&perPage=50",
     );
   });
 
   it("omits page=1", () => {
-    expect(buildSearchUrl({ q: "nextjs", page: 1, perPage: 50, sort: "", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "nextjs", page: 1, perPage: 50, sort: "" })).toBe(
       "/?q=nextjs&perPage=50",
     );
   });
 
   it("omits perPage=30", () => {
-    expect(buildSearchUrl({ q: "nextjs", page: 2, perPage: 30, sort: "", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "nextjs", page: 2, perPage: 30, sort: "" })).toBe(
       "/?q=nextjs&page=2",
     );
   });
 
   it("omits both defaults", () => {
-    expect(buildSearchUrl({ q: "nextjs", page: 1, perPage: 30, sort: "", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "nextjs", page: 1, perPage: 30, sort: "" })).toBe(
       "/?q=nextjs",
     );
   });
 
   it("returns / when q is empty", () => {
-    expect(buildSearchUrl({ q: "", page: 1, perPage: 30, sort: "", language: "" })).toBe("/");
+    expect(buildSearchUrl({ q: "", page: 1, perPage: 30, sort: "" })).toBe("/");
   });
 
   it("encodes special characters in q", () => {
-    const url = buildSearchUrl({ q: "foo&bar=baz", page: 1, perPage: 30, sort: "", language: "" });
+    const url = buildSearchUrl({ q: "foo&bar=baz", page: 1, perPage: 30, sort: "" });
     expect(url).toBe("/?q=foo%26bar%3Dbaz");
   });
 
   it("encodes Japanese characters in q", () => {
-    const url = buildSearchUrl({ q: "日本語", page: 1, perPage: 30, sort: "", language: "" });
+    const url = buildSearchUrl({ q: "日本語", page: 1, perPage: 30, sort: "" });
     expect(url).toContain("q=");
     // URLSearchParams encodes as percent-encoded UTF-8
     const parsed = new URLSearchParams(url.replace("/?", ""));
@@ -95,26 +90,14 @@ describe("buildSearchUrl", () => {
   });
 
   it("includes sort when not default", () => {
-    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "stars", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "stars" })).toBe(
       "/?q=react&sort=stars",
     );
   });
 
   it("omits sort when default (empty string)", () => {
-    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "", language: "" })).toBe(
+    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "" })).toBe(
       "/?q=react",
-    );
-  });
-
-  it("includes language when set", () => {
-    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "", language: "TypeScript" })).toBe(
-      "/?q=react&language=TypeScript",
-    );
-  });
-
-  it("includes both sort and language", () => {
-    expect(buildSearchUrl({ q: "react", page: 1, perPage: 30, sort: "updated", language: "Go" })).toBe(
-      "/?q=react&sort=updated&language=Go",
     );
   });
 });

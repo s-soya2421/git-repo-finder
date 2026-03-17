@@ -9,7 +9,6 @@ export type ParsedSearchParams = {
   page: number;
   perPage: number;
   sort: SortOption;
-  language: string;
 };
 
 /**
@@ -39,8 +38,5 @@ export function parseSearchParams(
     ? (rawSort as SortOption)
     : "";
 
-  const rawLanguage = typeof params.language === "string" ? params.language : "";
-  const language = rawLanguage.trim();
-
-  return { q, page, perPage, sort, language };
+  return { q, page, perPage, sort };
 }
