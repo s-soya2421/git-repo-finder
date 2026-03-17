@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeSearchParams, buildSearchUrl } from "@/features/repository-search/lib/normalize-search-params";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Only normalize the top page search params
   if (request.nextUrl.pathname !== "/") {
     return NextResponse.next();
