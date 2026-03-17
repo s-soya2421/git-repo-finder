@@ -13,10 +13,7 @@ app/
   page.tsx
   loading.tsx
   error.tsx
-  not-found.tsx
-  (.)repositories/[owner]/[repo]/   ← Intercepting Routes（一覧からのオーバーレイ）
-    page.tsx
-  repositories/[owner]/[repo]/      ← 直接アクセス時の独立ページ
+  repositories/[owner]/[repo]/
     page.tsx
     loading.tsx
     not-found.tsx
@@ -35,21 +32,21 @@ features/
       EmptyState.tsx
     lib/
       parse-search-params.ts
-      build-search-query.ts
-      get-visible-pages.ts
-      map-search-response.ts
       normalize-search-params.ts
+      calc-pagination.ts
+      map-search-response.ts
     types.ts
 
   repository-detail/
     components/
+      RepositoryDetail.tsx
+      RepositoryDetailSkeleton.tsx
       RepositoryHeader.tsx
       RepositoryMeta.tsx
       RepositoryStats.tsx
-      RepositoryTopics.tsx
       RepositoryReadme.tsx
       ExternalLinks.tsx
-      FavoriteButton.tsx
+      BackToListButton.tsx
     lib/
       map-repository-response.ts
     types.ts
@@ -65,6 +62,8 @@ features/
   recently-viewed/
     components/
       RecentlyViewedList.tsx
+      RecentlyViewedListItem.tsx
+      RecentlyViewedRecorder.tsx
     lib/
       recently-viewed-storage.ts
     types.ts
@@ -77,11 +76,21 @@ shared/
     avatar.tsx
     select.tsx
     badge.tsx
+    site-header.tsx
+    site-footer.tsx
+    nav-links.tsx
+    theme-provider.tsx
+    theme-toggle.tsx
+    scroll-to-top.tsx
   lib/
     cn.ts
     format-number.ts
     format-relative-date.ts
     logger.ts
+    storage.ts
+    storage-keys.ts
+  types/
+    stored-repository.ts
   github/
     client.ts
     schemas.ts
@@ -109,7 +118,8 @@ App Router では原則 Server Component として実装し、インタラクシ
 | `PaginationNav.tsx` | Server | 純粋な描画 |
 | `PerPageSelect.tsx` | Client | onChange でルーター操作 |
 | `FavoriteButton.tsx` | Client | LocalStorage 読み書き |
-| `RecentlyViewed.tsx` | Client | LocalStorage 読み書き |
+| `RecentlyViewedList.tsx` | Client | LocalStorage 読み書き |
+| `RecentlyViewedRecorder.tsx` | Client | 閲覧記録（effect、非表示） |
 
 **原則**: データ取得・描画のみのコンポーネントは Server、state・イベント・LocalStorage が必要なものは Client。`'use client'` は末端の葉コンポーネントに留め、親は Server のまま保つ。
 
@@ -117,21 +127,12 @@ App Router では原則 Server Component として実装し、インタラクシ
 
 ## 2. レンダリング・ルーティング設計
 
-### 2.1 Intercepting Routes
+### 2.1 Intercepting Routes（未実装・将来検討）
 
-一覧から詳細への遷移に Intercepting Routes を採用する。
+一覧から詳細への遷移に Intercepting Routes を採用する構想があったが、現時点では未実装。
+現状は一覧から詳細へ通常のページ遷移を行い、独立ページとして表示する。
 
-```
-app/
-  (.)repositories/[owner]/[repo]/   ← 一覧から遷移した場合のオーバーレイ
-    page.tsx
-  repositories/[owner]/[repo]/      ← URL 直接アクセス時の独立ページ
-    page.tsx
-```
-
-- 一覧コンテキストからの遷移 → オーバーレイ表示（背景に一覧が残る）
-- URL 直接アクセス / リロード → 独立ページとして表示
-- URL は両ケースで同一（共有・再訪が可能）
+将来的にオーバーレイ表示（背景に一覧が残る）を検討する場合は `app/(.)repositories/[owner]/[repo]/` を追加する。
 
 ### 2.2 Streaming + Suspense
 
@@ -170,17 +171,12 @@ export const getRepository = cache(async (owner: string, repo: string) => {
 })
 ```
 
-### 2.6 Middleware
+### 2.6 URL パラメータの正規化
 
-URL パラメータの正規化・リダイレクトを Middleware で処理する。
+URL パラメータの正規化はサーバーサイドの `normalizeSearchParams()` で処理する。Middleware（`middleware.ts`）は使用していない。
 
-```ts
-// middleware.ts
-// 不正な page / perPage を正規化して redirect
-```
-
-- `page < 1` → `page=1` へリダイレクト
-- `perPage` が許可値以外 → デフォルト値へリダイレクト
+- `page < 1` → `page=1` に正規化
+- `perPage` が許可値以外 → デフォルト値に正規化
 - API レイヤーに不正値が到達しないようにする
 
 ### 2.7 next/font

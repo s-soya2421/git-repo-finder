@@ -136,7 +136,7 @@ URL params: { owner, repo }
 
 | 条件 | 表示 |
 |---|---|
-| README あり | `react-markdown` + remarkGfm + rehypeRaw + rehypeSanitize |
+| README あり | `react-markdown` + remarkGfm + rehypeRaw |
 | README なし | 「README が見つかりませんでした」 |
 
 ---
@@ -168,7 +168,7 @@ URL params: { owner, repo }
 ## 10. エッジケース・制約
 
 - README の Base64 デコードはサーバー側で実行
-- README の HTML は `rehypeSanitize` で XSS 対策済み
+- README の HTML は `rehypeRaw` でレンダリング
 - `getReadme()` が 404 の場合は null を返す（エラーにしない）
 - レート制限時はリポジトリ情報・README ともに取得不可
 - `BackToListButton` は `router.back()` なので、直接アクセス時は前のページに戻る（一覧とは限らない）

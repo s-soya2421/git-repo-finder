@@ -20,7 +20,7 @@
 
 - 例: `/?q=nextjs&page=2&perPage=50`
 - `page=1`, `perPage=30` は URL から省略される
-- 不正値は Middleware が正規化し 308 リダイレクト
+- 不正値はサーバーサイドで `normalizeSearchParams()` により正規化
 
 ---
 
@@ -79,8 +79,8 @@
 
 ```
 URL searchParams
-  → Middleware: normalizeSearchParams() → 不正値なら 308 リダイレクト
-  → page.tsx: parseSearchParams() → { q, page, perPage }
+  → page.tsx: normalizeSearchParams() → 不正値を正規化
+  → parseSearchParams() → { q, page, perPage }
   → q がなければ EmptyState(initial) + RecentlyViewedList
   → q があれば Suspense 境界内で RepositoryList を描画
     → searchRepositories(q, page, perPage) [Server]
